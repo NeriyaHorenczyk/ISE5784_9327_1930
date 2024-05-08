@@ -18,4 +18,43 @@ public class Vector extends Point
             throw new IllegalArgumentException ("vector is zero");
 
     }
+
+    public double lengthSquared(){
+        return ((this.xyz.d1*this.xyz.d1)+(this.xyz.d2*this.xyz.d2)+(this.xyz.d3*this.xyz.d3));
+    }
+
+    public double length(){
+        return Math.sqrt(lengthSquared());
+    }
+
+    public Vector add(Vector v){
+            return new Vector(this.xyz.d1+v.xyz.d1,this.xyz.d2+v.xyz.d2,this.xyz.d3+v.xyz.d3);
+    }
+    public Vector scale(double d){
+        return new Vector(this.xyz.d1*d,this.xyz.d2*d,this.xyz.d3*d);
+    }
+     public double dotProduct(Vector v){
+        return this.xyz.d1*v.xyz.d1+this.xyz.d2*v.xyz.d2+this.xyz.d3*v.xyz.d3;
+     }
+     public Vector crossProduct(Vector v){
+        return new Vector(this.xyz.d2*v.xyz.d3-this.xyz.d3*v.xyz.d2,
+                this.xyz.d3*v.xyz.d1-this.xyz.d1*v.xyz.d3,
+                this.xyz.d1*v.xyz.d2-this.xyz.d2*v.xyz.d1);
+     }
+     public  Vector normalize(){
+        double len =length();
+        return new Vector(this.xyz.d1/len,this.xyz.d2/len,this.xyz.d3/len);
+     }
+    @Override
+    public boolean equals(Object obj){
+        return  (( this== obj)||super.equals(obj)) ;
+
+    }
+    @Override
+    public String toString(){
+        return super.toString();
+    }
+
+
+
 }
