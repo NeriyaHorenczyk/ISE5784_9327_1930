@@ -28,7 +28,7 @@ public class Point
 		xyz = new Double3(d1, d2, d3);
 	}
 
-	public Vector substract(Point p)
+	public Vector subtract(Point p)
 	{
 		return new Vector(p.xyz.d1-this.xyz.d1,p.xyz.d2-this.xyz.d2,p.xyz.d3-this.xyz.d3);
 	}
