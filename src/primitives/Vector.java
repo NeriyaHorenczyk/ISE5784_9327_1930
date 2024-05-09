@@ -1,10 +1,19 @@
 package primitives;
 
 /**
- * represent a vector to al primitivs
+ * A Vector class that represent a vector in space.
  */
 public class Vector extends Point
 {
+    /**
+     *A double parameter Constructor that builds a new vector with three double values
+     *that represent the three valus of the Vector.
+     *
+     * @param d1 represent the X value in the vector
+     * @param d2 represent the Y value in the vector
+     * @param d3 represent the Z value in the vector
+     * @throws IllegalArgumentException in case the new vector is equals to the ZERO vector (0,0,0)
+     */
     public Vector(double d1,double d2,double d3) throws IllegalArgumentException{
         super(d1,d2,d3);
         Double3 testVectorZero=new Double3(d1,d2,d3);
@@ -15,6 +24,11 @@ public class Vector extends Point
 
     }
 
+    /**
+     * A Double3 parameter constructor that builds a new Vector with a Double3 parameter
+     * @param dob3 the Double3 parameter
+     * @throws IllegalArgumentException in case the new vector is equals to the ZERO vector (0,0,0)
+     */
     public Vector( Double3 dob3) throws IllegalArgumentException{
         super(dob3);
         if(dob3.equals(Double3.ZERO))
@@ -32,44 +46,45 @@ public class Vector extends Point
 
     /**
      *
-     * @return the lenght of the vector
+     * @return the length of the vector
      */
     public double length(){
         return Math.sqrt(lengthSquared());
     }
 
     /**
-     *the function do a vector connection
-     * @param v argoment type vector
-     * @return new vector how vector connection whit tje argoment
+     *the function do a vector addition
+     * @param v argument type vector
+     * @return new vector with the new values after the addition.
      */
     public Vector add(Vector v){
             return new Vector(this.xyz.d1+v.xyz.d1,this.xyz.d2+v.xyz.d2,this.xyz.d3+v.xyz.d3);
     }
 
     /**
-     * the function get a numnber and Vector multiplication whit its
-     * @param d a argoment fo double type
-     * @return a new vector how Vector multiplication in number
+     * multiply each value of the vector with the function parameter.
+     *
+     * @param d the double parameter of the function
+     * @return a new vector with the new values of the multiplication
      */
     public Vector scale(double d){
         return new Vector(this.xyz.d1*d,this.xyz.d2*d,this.xyz.d3*d);
     }
 
     /**
-     * the function to a  dot-product betwin are vctoe and ander vector
-     * @param v a argoment fo vector type
-     * @return the dot-product
+     * dot-product between the parameter vector and the current vector
+     * @param v parameter vector of the function
+     * @return the dot-product between the two vectors.
      */
      public double dotProduct(Vector v){
         return this.xyz.d1*v.xyz.d1+this.xyz.d2*v.xyz.d2+this.xyz.d3*v.xyz.d3;
      }
 
     /**
-     * the function get as argoment avector and do a Vector multiplication are vetor and the
-     * argoment vector
-     * @param v a argoment fo vector type
-     * @return the new vector
+     * cross-product between the parameter vector and the current vector.
+     *
+     * @param v the parameter vector of the function
+     * @return new vector with the new values after the cross-product action
      */
      public Vector crossProduct(Vector v){
         return new Vector(this.xyz.d2*v.xyz.d3-this.xyz.d3*v.xyz.d2,
@@ -79,7 +94,7 @@ public class Vector extends Point
 
     /**
      *
-     * @return a new vector how as normalize to the unit vector
+     * @return a new normalized vector from the current vector
      */
      public  Vector normalize(){
         double len =length();
