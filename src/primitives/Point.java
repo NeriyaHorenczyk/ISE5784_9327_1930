@@ -6,7 +6,7 @@ package primitives;
 public class Point
 {
 
-	protected Double3 xyz;
+	protected final Double3 xyz;
 
 	/**
 	 * This is a static point that represent the (0,0,0) point.
@@ -30,12 +30,14 @@ public class Point
 
 	public Vector subtract(Point p)
 	{
-		return new Vector(p.xyz.d1-this.xyz.d1,p.xyz.d2-this.xyz.d2,p.xyz.d3-this.xyz.d3);
+		return new Vector(xyz.subtract(p.xyz));
+		//return new Vector(p.xyz.d1-this.xyz.d1,p.xyz.d2-this.xyz.d2,p.xyz.d3-this.xyz.d3);
 	}
 
 	public Point add(Vector v)
 	{
-		return new Point(this.xyz.d1+v.xyz.d1,this.xyz.d2+v.xyz.d2,this.xyz.d3+v.xyz.d3);
+		return new Point(xyz.add(v.xyz));
+		//return new Point(this.xyz.d1+v.xyz.d1,this.xyz.d2+v.xyz.d2,this.xyz.d3+v.xyz.d3);
 	}
 
 	public double distanceSquared(Point p)
