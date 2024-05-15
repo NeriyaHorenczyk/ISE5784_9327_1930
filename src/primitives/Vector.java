@@ -38,7 +38,7 @@ public class Vector extends Point
 
     /**
      *
-     * @return the squared length of the vector
+     * @return the length of the vector squared
      */
     public double lengthSquared(){
         return ((this.xyz.d1*this.xyz.d1)+(this.xyz.d2*this.xyz.d2)+(this.xyz.d3*this.xyz.d3));
