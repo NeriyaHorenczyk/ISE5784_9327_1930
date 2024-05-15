@@ -1,19 +1,34 @@
+
 package geometries;
 
 import primitives.Point;
 import primitives.Vector;
 
+/**
+ * Tha class represents a Plane whit tow fileds , one is object of piont and one is objet of normal
+ */
 public class Plane implements Geometry
 {
 	private final Point q;
 	private final Vector normal;
 
+	/**
+	 * the first constractor  get 3 points
+	 * @param p1 Initializes the point of the class
+	 * @param p2
+	 * @param p3
+	 */
 	public Plane(Point p1, Point p2, Point p3)
 	{
 		this.q = p1;
 		normal = null;
 	}
 
+	/**
+	 * the second constractor get tow argoment point and vector
+	 * @param p	Initializes the point of the class
+	 * @param v Initializes the vector of the class and do it a normal vector
+	 */
 	public Plane(Point p, Vector v)
 	{
 		this.q = p;
@@ -27,6 +42,10 @@ public class Plane implements Geometry
 		return p.subtract(this.q).crossProduct(this.normal);
 	}
 
+	/**
+	 * function loading of getNormal
+	 * @return the normal
+	 */
 	public Vector getNormal()
 	{
 		return this.normal;

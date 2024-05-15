@@ -3,7 +3,9 @@ package geometries;
 import primitives.Vector;
 import primitives.Point;
 
-
+/**
+ * Geometry interface represents all the geometric shapes
+ */
 public interface Geometry
 {
 	/**
