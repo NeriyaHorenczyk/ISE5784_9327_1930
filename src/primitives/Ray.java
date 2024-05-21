@@ -3,7 +3,7 @@ package primitives;
 /**
  * Ray class that represent a ray in space using a Point and a Vector.
  */
-public class Ray
+public class  Ray
 {
 	private Point head;
 	private Vector direction;
