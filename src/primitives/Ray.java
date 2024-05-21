@@ -26,8 +26,8 @@ public class Ray
 			return true;
 
 		return obj instanceof Ray other
-				&& this.head.equals(((Ray) obj).head)
-				&& this.direction.equals(((Ray) obj).direction);
+				&& this.head.equals(other.head)
+				&& this.direction.equals(other.direction);
 	}
 
 	@Override

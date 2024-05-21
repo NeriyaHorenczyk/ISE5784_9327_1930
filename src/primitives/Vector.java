@@ -18,7 +18,7 @@ public class Vector extends Point
         super(d1,d2,d3);
         Double3 testVectorZero=new Double3(d1,d2,d3);
         if(testVectorZero.equals(Double3.ZERO))
-            throw new IllegalArgumentException ("vector is zero");
+            throw new IllegalArgumentException("vector is zero");
 
 
 
@@ -37,7 +37,6 @@ public class Vector extends Point
     }
 
     /**
-     *
      * @return the length of the vector squared
      */
     public double lengthSquared(){
@@ -102,14 +101,14 @@ public class Vector extends Point
      }
     @Override
     public boolean equals(Object obj){
-        return  (( this== obj)||super.equals(obj)) ;
+        if (this == obj)
+            return true;
 
+        return (obj instanceof Vector && super.equals(obj));
     }
     @Override
+
     public String toString(){
         return super.toString();
     }
-
-
-
 }
