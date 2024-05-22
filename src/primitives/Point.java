@@ -55,7 +55,7 @@ public class Point
 	public Point add(Vector v)
 	{
 		return new Point(xyz.add(v.xyz));
-		//return new Point(this.xyz.d1+v.xyz.d1,this.xyz.d2+v.xyz.d2,this.xyz.d3+v.xyz.d3);
+
 	}
 
 	/**
