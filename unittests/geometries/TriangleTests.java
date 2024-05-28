@@ -16,13 +16,15 @@ class TriangleTests
 	void getNormal()
 	{
 		// ============ Equivalence Partitions Tests ==============
-		// TC01: There is a simple single test here - using a quad
-		assertDoesNotThrow(() -> tri.getNormal(new Point(0, 0, 1)), "");
+		// TC01: test if the exeptet is corect
+		assertDoesNotThrow(() -> tri.getNormal(new Point(0, 0, 1)),
+				"the exepte is not corect");
 
 		// generate the test result
 		Vector result = tri.getNormal(new Point(0, 0, 1));
 		// ensure |result| = 1
-		assertEquals(1, result.length(), 0.00000001, "Triangle normal is not a unit vector");
+		assertEquals(1, result.length(), 0.00000001,
+				"Triangle normal is not a unit vector");
 	}
 
 
