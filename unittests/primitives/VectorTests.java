@@ -39,7 +39,8 @@ class VectorTests
 		assertThrows(IllegalArgumentException.class, () -> new Vector(0, 0, 0), "Constructed a zero vector");
 
 		// TC04: Vector is zero
-		assertThrows(IllegalArgumentException.class, () -> new Vector(new Double3(0, 0, 0)), "Constructed a zero vector");
+		assertThrows(IllegalArgumentException.class, () -> new Vector(Double3.ZERO), "Constructed a zero vector");
+
 
 	}
 

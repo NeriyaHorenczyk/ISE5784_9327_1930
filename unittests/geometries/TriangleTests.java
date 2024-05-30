@@ -24,7 +24,7 @@ class TriangleTests
 
 		// TC02: test if Triangle is equals 1 ro -1
 		assertTrue(result.equals( new Vector(0,0,1))||
-				result.equals(new Vector(0,0,-1)),
+						result.equals(new Vector(0,0,-1)),
 				" the Triangle not 1 or -1 ");
 	}
 

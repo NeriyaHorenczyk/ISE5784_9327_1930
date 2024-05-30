@@ -17,7 +17,7 @@ class SphereTests
 	void getNormal()
 	{
 
-			// ============ Equivalence Partitions Tests ==============
+		// ============ Equivalence Partitions Tests ==============
 		// TC01: test if the vector sphera is 1 or -1
 		assertTrue(spheraNormai.equals(new Vector(0,0,1))||
 				spheraNormai.equals(new Vector(0,0,-1)),
