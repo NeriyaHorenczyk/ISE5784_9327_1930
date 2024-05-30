@@ -21,6 +21,7 @@ class TriangleTests
 		// TC01: ensure |result| = 1
 		assertEquals(1, result.length(), 0.00000001,
 				"Triangle normal is not a unit vector");
+
 		// TC02: test if Triangle is equals 1 ro -1
 		assertTrue(result.equals( new Vector(0,0,1))||
 				result.equals(new Vector(0,0,-1)),
