@@ -2,7 +2,10 @@
 package geometries;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 /**
  * Tha class represents a Plane whit tow fileds , one is object of piont and one is objet of normal
@@ -51,5 +54,11 @@ public class Plane implements Geometry
 	public Vector getNormal()
 	{
 		return this.normal.normalize();
+	}
+
+	@Override
+	public List<Point> findIntersections(Ray ray)
+	{
+		return null;
 	}
 }
