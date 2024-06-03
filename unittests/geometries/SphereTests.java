@@ -108,9 +108,9 @@ class SphereTests
 		//TC05:test if ray start out the sphere and Intersections zero
 		Ray RayTestBva05= new Ray(new Point(1,-6,0),  v0_60);
 
-		assertNull(sphereTest.findIntersections(RayTestBva05));
+		assertNull(sphereTest.findIntersections(RayTestBva05),"the is more than zero Intersections ");
 
-		//TC06:test if ray start on the sphere and Inter sections one (not passes through the center)
+		//TC06:test if ray start on the sphere and Intersections one (not passes through the center)
 		Ray RayTestBva06= new Ray(new Point(1,-2,0),  v0_60);
 
 		assertEquals(1,sphereTest.findIntersections(RayTestBva06).size(),
