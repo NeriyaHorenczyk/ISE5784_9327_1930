@@ -38,27 +38,28 @@ class TriangleTests
 		Point p380=new Point(3,8,0);
 		Point pN180=new Point(-1,8,0);
 		Point pN18N3=new Point(-1,8,-3);
+		Vector v216=new Vector(2,1,6);
 		Triangle testTri=new Triangle(p380,pN180,pN18N3);
 		// ============ Equivalence Partitions Tests ==============
-		// TC01:
+		// TC01:test point inside the Triangle
 		assertEquals(1,testTri.findIntersections(new Ray(new Point(1,7,0),new Vector(0,1,0))),
 				"the point in not in the triangel");
-		// TC02:
-		assertNull(testTri.findIntersections(new Ray(new Point(-2,7,-1),new Vector(2,1,6))),
+		// TC02:A point opposite a side
+		assertNull(testTri.findIntersections(new Ray(new Point(-2,7,-1),v216)),
 				"the is more than zero Intersections ");
 
-		// TC03:
-		assertNull(testTri.findIntersections(new Ray(new Point(6,7,-6),new Vector(2,1,6))),
+		// TC03:point versus vertex
+		assertNull(testTri.findIntersections(new Ray(new Point(6,7,-6),v216)),
 				"the is more than zero Intersections ");
 		// ============ Boundary Values Tests ==============
-		// TC01:
-		assertNull(testTri.findIntersections(new Ray(new Point(0,7,-6.5),new Vector(2,1,6))),
+		// TC01:point on a rib
+		assertNull(testTri.findIntersections(new Ray(new Point(0,7,-6.5),v216)),
 				"the is more than zero Intersections ");
-		// TC02:
-		assertNull(testTri.findIntersections(new Ray(new Point(1,7,-6),new Vector(2,1,6))),
+		// TC02:A point on a vertex
+		assertNull(testTri.findIntersections(new Ray(new Point(1,7,-6),v216)),
 				"the is more than zero Intersections ");
-		// TC03:
-		assertNull(testTri.findIntersections(new Ray(new Point(5,7,-5),new Vector(2,1,6))),
+		// TC03:A point on the continuation of the rib
+		assertNull(testTri.findIntersections(new Ray(new Point(5,7,-5),v216)),
 				"the is more than zero Intersections ");
 	}
 
