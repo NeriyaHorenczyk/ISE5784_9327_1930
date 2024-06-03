@@ -2,7 +2,10 @@ package geometries;
 
 import org.junit.jupiter.api.Test;
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,6 +31,11 @@ class TriangleTests
 				" the Triangle not 1 or -1 ");
 	}
 
+	@Test
+	void testFindIntersections()
+	{
+		
+	}
 
 
 
