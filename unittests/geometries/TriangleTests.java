@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Test class for Triangle class
  */
-class TriangleTest {
+class TriangleTests {
 
 	@Test
 	void getNormal() {
