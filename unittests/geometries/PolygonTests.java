@@ -1,10 +1,12 @@
 package geometries;
 
+import static java.lang.Math.sqrt;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
 
 /**
@@ -89,4 +91,35 @@ public class PolygonTests {
                       "Polygon's normal is not orthogonal to one of the edges");
    }
 
+   @Test
+   void testFindIntersections()
+   {
+      Polygon testPoly = new Polygon(new Point(1,1,1), new Point(2,0.5,0.5),new Point(1,-1,1), new Point(-2,0.5,2.5));
+      // ============ Equivalence Partitions Tests ==============
+      // TC01: Ray does not start on the plane and intersect with the Polygon
+      assertEquals(1,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,1))).size(),
+              "TC01 Fail: number of points is incorrect!");
+
+      //TC02: Ray does not start on the plane and does not intersect with the Polygon
+        assertEquals(0,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,-1))).size(),
+                "TC02 Fail: number of points is incorrect!");
+
+      //TC03: Ray intersect one of the vertex
+      assertEquals(0,testPoly.findIntersections(new Ray(new Point(-1,-1,1),new Vector(3,1.5,-0.5))).size(),
+              "TC03 Fail: number of points is incorrect!");
+
+      // =============== Boundary Values Tests ==================
+
+      // TC04: Ray intersect the edge of the Polygon
+        assertEquals(1,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,0))).size(),
+                "TC04 Fail: number of points is incorrect!");
+
+      // TC05: Ray intersect the vertex of the Polygon
+        assertEquals(0,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,0.5))).size(),
+                "TC05 Fail: number of points is incorrect!");
+
+      //TC06: Ray intersects on edge's continuation
+        assertEquals(0,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,1.5))).size(),
+                "TC06 Fail: number of points is incorrect!");
+   }
 }
