@@ -19,6 +19,8 @@ public class Triangle extends Polygon
 
 	public List<Point> findIntersections(Ray ray)
 	{
+
+
 		return super.findIntersections(ray);
 	}
 

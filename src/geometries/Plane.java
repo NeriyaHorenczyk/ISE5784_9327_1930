@@ -7,6 +7,8 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.isZero;
+
 /**
  * Tha class represents a Plane whit tow fileds , one is object of piont and one is objet of normal
  */
@@ -59,6 +61,17 @@ public class Plane implements Geometry
 	@Override
 	public List<Point> findIntersections(Ray ray)
 	{
-		return null;
+		//q -p=0
+		if(q.equals(ray.getHead()))
+			return null;
+		//A case where the ray is parallel to the plane
+		if(isZero(normal.dotProduct(ray.getDirection())))
+			return null;
+
+		double t= normal.dotProduct(q.subtract(ray.getHead()))/normal.dotProduct(ray.getDirection());
+			if(isZero(t)||0>=t)
+				return null;
+		return List.of(ray.getPoint(t));
+
 	}
 }
