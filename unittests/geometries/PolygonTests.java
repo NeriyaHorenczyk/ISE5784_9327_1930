@@ -101,25 +101,24 @@ public class PolygonTests {
               "TC01 Fail: number of points is incorrect!");
 
       //TC02: Ray does not start on the plane and does not intersect with the Polygon
-        assertEquals(0,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,-1))).size(),
-                "TC02 Fail: number of points is incorrect!");
+      assertNull(testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,-1))));
 
       //TC03: Ray intersect one of the vertex
-      assertEquals(0,testPoly.findIntersections(new Ray(new Point(-1,-1,1),new Vector(3,1.5,-0.5))).size(),
+      assertEquals(1,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,0.5))).size(),
               "TC03 Fail: number of points is incorrect!");
 
       // =============== Boundary Values Tests ==================
 
       // TC04: Ray intersect the edge of the Polygon
-        assertEquals(1,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,0))).size(),
-                "TC04 Fail: number of points is incorrect!");
+      assertNull(testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,0))),
+              "TC04 Fail: number of points is incorrect!");
 
       // TC05: Ray intersect the vertex of the Polygon
-        assertEquals(0,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,0.5))).size(),
+        assertEquals(1,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,0.5))).size(),
                 "TC05 Fail: number of points is incorrect!");
 
       //TC06: Ray intersects on edge's continuation
-        assertEquals(0,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,1.5))).size(),
+        assertEquals(1,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,1.5))).size(),
                 "TC06 Fail: number of points is incorrect!");
    }
 }

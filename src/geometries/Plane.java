@@ -19,6 +19,7 @@ public class Plane implements Geometry
 
 	/**
 	 * the first constractor  get 3 points
+	 *
 	 * @param p1 Initializes the point of the class
 	 * @param p2
 	 * @param p3
@@ -27,13 +28,14 @@ public class Plane implements Geometry
 	{
 
 		this.q = p1;
-		this.normal=p2.subtract(p1).crossProduct(p3.subtract(p1));
+		this.normal = p2.subtract(p1).crossProduct(p3.subtract(p1));
 
 	}
 
 	/**
 	 * the second constractor get tow argoment point and vector
-	 * @param p	Initializes the point of the class
+	 *
+	 * @param p Initializes the point of the class
 	 * @param v Initializes the vector of the class and do it a normal vector
 	 */
 	public Plane(Point p, Vector v)
@@ -51,6 +53,7 @@ public class Plane implements Geometry
 
 	/**
 	 * function loading of getNormal
+	 *
 	 * @return the normal
 	 */
 	public Vector getNormal()
@@ -62,15 +65,15 @@ public class Plane implements Geometry
 	public List<Point> findIntersections(Ray ray)
 	{
 		//q -p=0
-		if(q.equals(ray.getHead()))
+		if (q.equals(ray.getHead()))
 			return null;
 		//A case where the ray is parallel to the plane
-		if(isZero(normal.dotProduct(ray.getDirection())))
+		if (isZero(normal.dotProduct(ray.getDirection())))
 			return null;
 
-		double t= normal.dotProduct(q.subtract(ray.getHead()))/normal.dotProduct(ray.getDirection());
-			if(isZero(t)||0>=t)
-				return null;
+		double t = normal.dotProduct(q.subtract(ray.getHead())) / normal.dotProduct(ray.getDirection());
+		if (isZero(t) || t <= 0)
+			return null;
 		return List.of(ray.getPoint(t));
 
 	}

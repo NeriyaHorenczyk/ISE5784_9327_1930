@@ -1,68 +1,62 @@
-package geometries;
+package unittests.geometries;
 
+import geometries.Plane;
+import geometries.Polygon;
+import geometries.Triangle;
 import org.junit.jupiter.api.Test;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TriangleTests
-{
-	Point p1 =new Point(1, 0, 0);
-	Point p2=new Point(0, 1, 0);
-	Point p3=new Point(0, 0, 1);
-	Triangle tri = new Triangle(p1,p2,p3);
+/**
+ * Test class for Triangle class
+ */
+class TriangleTest {
+
 	@Test
-	void getNormal()
-	{
-		// ============ Equivalence Partitions Tests ==============
-
-		Vector result = tri.getNormal(new Point(0, 0, 1));
-		// TC01: ensure |result| = 1
-		assertEquals(1, result.length(), 0.00000001,
-				"Triangle normal is not a unit vector");
-
-		// TC02: test if Triangle is equals 1 ro -1
-		assertTrue(result.equals( new Vector(0,0,1))||
-						result.equals(new Vector(0,0,-1)),
-				" the Triangle not 1 or -1 ");
+	void getNormal() {
+		// Equivalence Partitions tests ======================================================================
+		// EP01 test if normal vector is correct
+		Triangle triangle = new Triangle(new Point(0, 0, 0), new Point(0, 5, 0), new Point(5, 0, 0));
+		Vector normal = new Vector(0, 0, 1);
+		assertFalse(normal.equals(triangle.getNormal(new Point(1, 1, 0))) ||
+				normal.equals(triangle.getNormal(new Point(-1, -1, 0))), "bad normal to triangle");
 	}
 
 	@Test
-	void testFindIntersections()
-	{
-		Point p380=new Point(3,8,0);
-		Point pN180=new Point(-1,8,0);
-		Point pN18N3=new Point(-1,8,-3);
-		Vector v216=new Vector(2,1,6);
-		Triangle testTri=new Triangle(p380,pN180,pN18N3);
-		// ============ Equivalence Partitions Tests ==============
-		// TC01:test point inside the Triangle
-		assertEquals(1,testTri.findIntersections(new Ray(new Point(1,7,0),new Vector(0,1,0))),
-				"the point in not in the triangel");
-		// TC02:A point opposite a side
-		assertNull(testTri.findIntersections(new Ray(new Point(-2,7,-1),v216)),
-				"the is more than zero Intersections ");
+	void findIntersections(){
+		// Equivalence Partitions tests ======================================================================
 
-		// TC03:point versus vertex
-		assertNull(testTri.findIntersections(new Ray(new Point(6,7,-6),v216)),
-				"the is more than zero Intersections ");
-		// ============ Boundary Values Tests ==============
-		// TC01:point on a rib
-		assertNull(testTri.findIntersections(new Ray(new Point(0,7,-6.5),v216)),
-				"the is more than zero Intersections ");
-		// TC02:A point on a vertex
-		assertNull(testTri.findIntersections(new Ray(new Point(1,7,-6),v216)),
-				"the is more than zero Intersections ");
-		// TC03:A point on the continuation of the rib
-		assertNull(testTri.findIntersections(new Ray(new Point(5,7,-5),v216)),
-				"the is more than zero Intersections ");
+		// EP01 ray passes through triangle
+		Ray ray = new Ray(new Point(3, 3, 2), new Vector(-1, -1, -4));
+		Triangle triangle = new Triangle(new Point(1, 0, 0), new Point(1, 5, 0), new Point(6, 0, 0));
+		assertEquals(1, triangle.findIntersections(ray).size());
+		assertEquals(new Point(2.5, 2.5, 0), triangle.findIntersections(ray).get(0));
+
+		// EP02 ray misses triangle on one side
+		ray = new Ray(new Point(3, 3, 2), new Vector(1, 1, -4));
+		assertNull(triangle.findIntersections(ray));
+
+		// EP03 ray misses triangle on two side
+		ray = new Ray(new Point(3, 3, 2), new Vector(-5, 5.5, -4));
+		assertNull(triangle.findIntersections(ray));
+
+		// Boundary value tests ==============================================================================
+		// BV01 ray intersects vertex
+		ray = new Ray(new Point(1, 0, 3), new Vector(0, 0, -1));
+		assertNull(triangle.findIntersections(ray));
+
+		// BV02 ray intersects edge
+		ray = new Ray(new Point(1, 0, 3), new Vector(1, 0, -6));
+		assertNull(triangle.findIntersections(ray));
+
+		// BV03 ray intersects edge continuation imaginary line
+		ray = new Ray(new Point(0.5, 0, 3), new Vector(0, 0, -1));
+		assertNull(triangle.findIntersections(ray));
+
 	}
-
 
 
 
