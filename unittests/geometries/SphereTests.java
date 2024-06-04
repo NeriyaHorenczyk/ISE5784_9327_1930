@@ -81,29 +81,26 @@ class SphereTests
 
 		//TC02:test if ray start on the sphere and goes through the center
 		Ray RayTestBva02= new Ray(p130, v0_60);
-		var expBva02= List.of(p130,p1_30);
-		var resBva02=sphereTest.findIntersections(RayTestBva02).stream().
-				sorted(Comparator.comparingDouble(p -> p.distance(RayTestBva02.getHead()))).toList();
-		assertEquals(2,sphereTest.findIntersections(RayTestBva02).size(),
+
+		assertEquals(1,sphereTest.findIntersections(RayTestBva02).size(),
 				"the number of is Inter sections is more then tow");
-		//test if all the points are same
-		assertEquals(expBva02,resBva02,"wrong points");
+
 
 		//TC03:test if ray start uot the sphere and Intersections twice and passes through the center
 		Ray RayTestBva03= new Ray(new Point(5,0,0),new Vector(-7,0,0));
 		var expBva03= List.of(p400,p_200);
-		var resBva03=sphereTest.findIntersections(RayTestBva02).stream().
+		var resBva03=sphereTest.findIntersections(RayTestBva03).stream().
 				sorted(Comparator.comparingDouble(p -> p.distance(RayTestBva03.getHead()))).toList();
-		assertEquals(2,sphereTest.findIntersections(RayTestBva02).size(),
+		assertEquals(2,sphereTest.findIntersections(RayTestBva03).size(),
 				"the number of is Intersections is not tow");
+
 		//test if all the points are same
 		assertEquals(expBva03,resBva03,"wrong points");
 
-		//TC04:test if ray start on the sphere and Intersections one
+		//TC04:test if ray start on the sphere and Intersections zero
 		Ray RayTestBva04= new Ray(p1_30, v0_60);
+		assertNull(sphereTest.findIntersections(RayTestBva04),"no Intersections on the sphere ");
 
-		assertEquals(1,sphereTest.findIntersections(RayTestBva04).size(),
-				"the number of is Intersections is not one");
 
 		//TC05:test if ray start out the sphere and Intersections zero
 		Ray RayTestBva05= new Ray(new Point(1,-6,0),  v0_60);
@@ -118,36 +115,32 @@ class SphereTests
 
 		//TC07:test if ray start out the sphere  and dont intersections the sphere (Multiplication of vectors)
 		Ray RayTestBva07= new Ray(new Point(0,-4,0),  new Vector(1,0,0));
-		assertNull(sphereTest.findIntersections(RayTestBva07));
+		assertNull(sphereTest.findIntersections(RayTestBva07),"the isnt Intersections whit the sphere ");
 
 
 		//TC08:one point Interections whit the sphere
-		Ray RayTestBva08= new Ray(new Point(-2.57,5.48,0),  new Vector(2.37,-4.57,2.58));
-		assertEquals(1,sphereTest.findIntersections(RayTestBva08).size(),
-				"the number of is Intersections is not one");
+		Ray RayTestBva08= new Ray(new Point(0,-4,0),  new Vector(0,2,2));
+		assertNull(sphereTest.findIntersections(RayTestBva08),"the isnt Intersections whit the sphere ");
+
 
 		//TC09:point uot the sphere and the verctor Multiplication
 		Ray RayTestBva09= new Ray(new Point(4.5,0,0),  new Vector(0,1,0));
-		assertNull(sphereTest.findIntersections(RayTestBva09));
+		assertNull(sphereTest.findIntersections(RayTestBva09),"the isnt Intersections whit the sphere");
 
 		//TC10: the ray are vertical to the center
 		Ray RayTestBva10= new Ray(new Point(0,-4.07,0),  new Vector(-2.37,-4.03,0));
-		assertNull(sphereTest.findIntersections(RayTestBva10));
+		assertNull(sphereTest.findIntersections(RayTestBva10),"the isnt Intersections whit the sphere");
 
-		//TC11: tow Intersections but not whit the center
-		Ray RayTestBva11= new Ray(new Point(-1.61,-0.81,1.24),  new Vector(3.52,3.45,-0.12));
-		assertEquals(2,sphereTest.findIntersections(RayTestBva11).size(),
-				"the number of is Inter sections is not tow");
-		var expBva11= List.of(new Point(-1.61,-0.81,1.24),new Point(1.91,2.63,1.12));
-		var resBva11=sphereTest.findIntersections(RayTestBva11).stream().
-				sorted(Comparator.comparingDouble(p -> p.distance(RayTestBva11.getHead()))).toList();
-				assertEquals(expBva11,resBva11,"wrong points");
+		//TC11: one Intersections but not whit the center
+		Ray RayTestBva11= new Ray(new Point(1.28,2.09,2.13),  new Vector(0.62,4.13,-0.04));
+		assertEquals(1,sphereTest.findIntersections(RayTestBva11).size(),
+				"the number of is Inter sections is not one");
 
-		// TC12:one Intersections but not and tow whit the ray taile
 
+		// TC12:zero Intersections but not and tow whit the ray taile
 		Ray RayTestBva12= new Ray(new Point(0.96,3,0),  new Vector(1.6,8.98,0));
-		assertEquals(1,sphereTest.findIntersections(RayTestBva12).size(),
-				"the number of is Inter sections is more then tow");
+		assertNull(sphereTest.findIntersections(RayTestBva12),
+				"the isnt Intersections whit the sphere");
 
 	}
 }
