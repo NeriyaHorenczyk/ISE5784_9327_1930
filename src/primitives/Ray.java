@@ -45,4 +45,11 @@ public class  Ray
 	{
 		return head.toString() + '\n' + direction.toString();
 	}
+
+	public Point getPoint(double d) {
+		if(Util.isZero(d))
+			return getHead();
+
+		return getHead().add(getDirection().scale(d));
+	}
 }
