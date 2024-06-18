@@ -22,8 +22,7 @@ public class Camera implements Cloneable
 	private double distance = 0.0;
 
 
-	private final String missingResource = "missing resource";
-	private final String cameraMsg = "Camera";
+	private Point pCenter;
 
 	/**
 	 * getPosition function returns the camera position.
@@ -123,7 +122,7 @@ public class Camera implements Cloneable
 	 */
 	public Ray constructRay(int nX, int nY, int j, int i)
 	{
-		Point pC = position.add(vTo.scale(distance));
+		Point pC = pCenter;
 		double rX = width / nX;
 		double rY = height / nY;
 		double xJ = (j - (nX - 1) / 2.0) * rX;
@@ -214,22 +213,27 @@ public class Camera implements Cloneable
 		 */
 		public Camera build() throws MissingResourceException
 		{
+
+			final String missingResource = "missing resource";
+			final String cameraMsg = "Camera";
 			// check if the Point is missing
 			if (camera.position == null)
-				throw new MissingResourceException(camera.missingResource, camera.cameraMsg, "The Point is missing");
+				throw new MissingResourceException(missingResource, cameraMsg, "The Point is missing");
 
 			//check if the vectors are missing
 			if (camera.vUp == null || camera.vTo == null)
-				throw new MissingResourceException(camera.missingResource, camera.cameraMsg, "The Vectors are missing");
+				throw new MissingResourceException(missingResource, cameraMsg, "The Vectors are missing");
 			if (camera.vUp.equals(Vector.ZERO) || camera.vTo.equals(Vector.ZERO))
 				throw new IllegalArgumentException("The Vectors are zero");
 
 			//check if the distance, height and width are missing
 			if (camera.distance == 0 || camera.height == 0 || camera.width == 0)
-				throw new MissingResourceException(camera.missingResource, camera.cameraMsg, "The distance, height or width are missing");
+				throw new MissingResourceException(missingResource, cameraMsg, "The distance, height or width are missing");
 
 			camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
-
+			camera.pCenter = camera.position.add(camera.vTo.scale(camera.distance));
+			
+			
 			return (Camera) camera.clone();
 
 		}
