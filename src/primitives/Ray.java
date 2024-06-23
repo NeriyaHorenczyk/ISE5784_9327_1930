@@ -1,5 +1,7 @@
 package primitives;
 
+import java.util.List;
+
 /**
  * Ray class that represent a ray in space using a Point and a Vector.
  */
@@ -27,6 +29,33 @@ public class  Ray
 	public Vector getDirection()
 	{
 		return direction;
+	}
+
+	/**
+	 * Find the closest point to the head of the ray from a list of points.
+	 * @param points the given list of points
+	 * @return the closest point to the head of the ray from the list of points.
+	 */
+
+	public Point findClosestPoint(List<Point> points)
+	{
+		if(points == null)
+			return null;
+
+		Point closest = null;
+		double minDistance = Double.POSITIVE_INFINITY;
+
+		for(Point p : points)
+		{
+			double distance = head.distance(p);
+			if(distance < minDistance)
+			{
+				minDistance = distance;
+				closest = p;
+			}
+		}
+
+		return closest;
 	}
 
 	@Override
