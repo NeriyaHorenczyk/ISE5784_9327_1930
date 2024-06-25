@@ -6,6 +6,7 @@ import geometries.Triangle;
 import org.junit.jupiter.api.Test;
 import primitives.Point;
 import primitives.Vector;
+import scene.Scene;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,7 +14,8 @@ class CameraAndIntersection
 {
 	Camera.Builder builder = new Camera.Builder().setVpSize(3, 3)
 			.setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
-			.setVpDistance(1);
+			.setVpDistance(1).setImageWriter(new ImageWriter("Test",1,1))
+			.setRayTracer(new SimpleRayTracer(new Scene("Test")));
 	//build new camera from the builder
 	Camera c1 = builder.setLocation(new Point(0, 0, 0)).build();
 	Camera c2 = builder.setLocation(new Point(0, 0, 0.5)).build();

@@ -261,7 +261,7 @@ public class Camera implements Cloneable
 				throw new MissingResourceException(missingResource, cameraMsg, "The distance, height or width are missing");
 
 			if(camera.imageWriter==null)
-				throw new MissingResourceException(missingResource, cameraMsg, "missing image writer");
+				throw new MissingResourceException(missingResource, Camera.class.getSimpleName(), "missing image writer");
 
 			if(camera.rayTracer==null)
 				throw new MissingResourceException(missingResource, cameraMsg, "missing ray Tracer");
