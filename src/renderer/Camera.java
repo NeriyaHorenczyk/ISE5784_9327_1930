@@ -1,5 +1,6 @@
 package renderer;
 
+import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
 import primitives.Ray;
@@ -20,6 +21,8 @@ public class Camera implements Cloneable
 	private double height = 0.0;
 	private double width = 0.0;
 	private double distance = 0.0;
+	private ImageWriter imageWriter;
+	private  RayTracerBase rayTracer;
 
 
 	private Point pCenter;
@@ -138,8 +141,28 @@ public class Camera implements Cloneable
 		return new Ray(position, vIJ);
 
 	}
+	public void castRay(int nX,int nY,int row,int column){
+		Ray ray=constructRay(nX,nY,row,column);
+		Color pixelColor =rayTracer.traceRay(ray);
+		imageWriter.writePixel(row,column,pixelColor);
+	}
+	public  void renderImage(){
+		for(int row=0;row<imageWriter.getNy();row++)
+			for(int column=0;column<imageWriter.getNx();column++)
+				castRay(imageWriter.getNx(),imageWriter.getNy(),row,column);
+	}
+	public  void printGrid(int interval, Color color){
+		for(int i=0; i<imageWriter.getNx();i++)
+			for(int j=0; j<imageWriter.getNy();j+=interval)
+				imageWriter.writePixel(i,j,color);
 
-
+		for(int i=0; i<imageWriter.getNx();i+=interval)
+			for(int j=0; j<imageWriter.getNy();j++)
+				imageWriter.writePixel(i,j,color);
+	}
+	public void writeToImage(){
+		imageWriter.writeToImage();
+	}
 	/**
 	 * Builder class is a static inner class of Camera class.
 	 * Builder class is used to build a Camera object.
@@ -159,7 +182,14 @@ public class Camera implements Cloneable
 			camera.position = p;
 			return this;
 		}
-
+		public Builder setRayTracer(RayTracerBase rayTracer){
+			camera.rayTracer=rayTracer;
+			return this;
+		}
+		public Builder setImageWriter(ImageWriter imageWriter){
+			camera.imageWriter=imageWriter;
+			return this;
+		}
 		/**
 		 * set the camera direction.
 		 *
@@ -230,6 +260,11 @@ public class Camera implements Cloneable
 			if (camera.distance == 0 || camera.height == 0 || camera.width == 0)
 				throw new MissingResourceException(missingResource, cameraMsg, "The distance, height or width are missing");
 
+			if(camera.imageWriter==null)
+				throw new MissingResourceException(missingResource, cameraMsg, "missing image writer");
+
+			if(camera.rayTracer==null)
+				throw new MissingResourceException(missingResource, cameraMsg, "missing ray Tracer");
 			camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
 			camera.pCenter = camera.position.add(camera.vTo.scale(camera.distance));
 			
