@@ -12,7 +12,7 @@ import static primitives.Util.isZero;
 /**
  * Tha class represents a Plane whit tow fileds , one is object of piont and one is objet of normal
  */
-public class Plane implements Geometry
+public class Plane extends Geometry
 {
 	private final Point q;
 	private final Vector normal;

@@ -44,4 +44,10 @@ public class Tube extends RadialGeometry
 	{
 		return null;
 	}
+
+	@Override
+	protected List<GeoPoint> findGeoIntesectionsHelper(Ray ray)
+	{
+		return null;
+	}
 }

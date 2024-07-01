@@ -141,16 +141,36 @@ public class Camera implements Cloneable
 		return new Ray(position, vIJ);
 
 	}
+
+	/**
+	 * castRay function casts a ray from the camera to a specific pixel in the view plane.
+	 *
+	 * @param nX     - number of pixels in the x-axis.
+	 * @param nY     - number of pixels in the y-axis.
+	 * @param row    - the pixel number in the x-axis.
+	 * @param column - the pixel number in the y-axis.
+	 */
 	public void castRay(int nX,int nY,int row,int column){
 		Ray ray=constructRay(nX,nY,row,column);
 		Color pixelColor =rayTracer.traceRay(ray);
 		imageWriter.writePixel(row,column,pixelColor);
 	}
+
+	/**
+	 * renderImage function renders the image.
+	 */
 	public  void renderImage(){
 		for(int row=0;row<imageWriter.getNy();row++)
 			for(int column=0;column<imageWriter.getNx();column++)
 				castRay(imageWriter.getNx(),imageWriter.getNy(),row,column);
 	}
+
+	/**
+	 * printGrid function prints a grid on the image.
+	 *
+	 * @param interval - the interval between the lines of the grid.
+	 * @param color    - the color of the grid.
+	 */
 	public  void printGrid(int interval, Color color){
 		for(int i=0; i<imageWriter.getNx();i++)
 			for(int j=0; j<imageWriter.getNy();j+=interval)
@@ -160,9 +180,14 @@ public class Camera implements Cloneable
 			for(int j=0; j<imageWriter.getNy();j++)
 				imageWriter.writePixel(i,j,color);
 	}
+
+	/**
+	 * writeToImage function writes the image to a file.
+	 */
 	public void writeToImage(){
 		imageWriter.writeToImage();
 	}
+
 	/**
 	 * Builder class is a static inner class of Camera class.
 	 * Builder class is used to build a Camera object.

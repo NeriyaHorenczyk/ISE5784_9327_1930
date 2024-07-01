@@ -30,6 +30,7 @@ public class Triangle extends Polygon
 	 * @param ray the given ray
 	 * @return list of all the intersections points of the ray with the triangle.
 	 */
+	@Override
 	public List<Point> findIntersections(Ray ray)
 	{
 		Vector v1 = vertices.get(0).subtract(ray.getHead());
