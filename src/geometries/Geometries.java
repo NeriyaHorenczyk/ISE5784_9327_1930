@@ -65,6 +65,7 @@ public class Geometries extends Intersectable
 		return intersections;
 	}
 
+
 	@Override
 	protected List<GeoPoint> findGeoIntesectionsHelper(Ray ray)
 	{

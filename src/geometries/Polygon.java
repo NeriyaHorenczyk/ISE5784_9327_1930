@@ -44,9 +44,9 @@ public class Polygon extends Geometry
 	 *                                  <li>The vertices are not in the same
 	 *                                  plane</li>
 	 *                                  <li>The order of vertices is not according
-	 *                                  to edge path</li>
-	 *                                  <li>Three consequent vertices lay in the
-	 *                                  same line (180&#176; angle between two
+	 *                                   <li>Three consequent vertices lay in the
+	 * 	 *                                  to edge path</li>
+	 *                                 same line (180&#176; angle between two
 	 *                                  consequent edges)
 	 *                                  <li>The polygon is concave (not convex)</li>
 	 *                                  </ul>
@@ -136,7 +136,7 @@ public class Polygon extends Geometry
 			return null;
 		Point point = intersections.getFirst();
 
-		//בן פה הפסקתי כי אין לי זמן
+		return List.of(new GeoPoint(this,point));
 
 
 	}

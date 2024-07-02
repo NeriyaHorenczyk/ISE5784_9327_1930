@@ -159,10 +159,11 @@ public class Camera implements Cloneable
 	/**
 	 * renderImage function renders the image.
 	 */
-	public  void renderImage(){
+	public  Camera renderImage(){
 		for(int row=0;row<imageWriter.getNy();row++)
 			for(int column=0;column<imageWriter.getNx();column++)
 				castRay(imageWriter.getNx(),imageWriter.getNy(),row,column);
+		return this;
 	}
 
 	/**
@@ -171,7 +172,7 @@ public class Camera implements Cloneable
 	 * @param interval - the interval between the lines of the grid.
 	 * @param color    - the color of the grid.
 	 */
-	public  void printGrid(int interval, Color color){
+	public  Camera printGrid(int interval, Color color){
 		for(int i=0; i<imageWriter.getNx();i++)
 			for(int j=0; j<imageWriter.getNy();j+=interval)
 				imageWriter.writePixel(i,j,color);
@@ -179,13 +180,15 @@ public class Camera implements Cloneable
 		for(int i=0; i<imageWriter.getNx();i+=interval)
 			for(int j=0; j<imageWriter.getNy();j++)
 				imageWriter.writePixel(i,j,color);
+		return this;
 	}
 
 	/**
 	 * writeToImage function writes the image to a file.
 	 */
-	public void writeToImage(){
+	public Camera writeToImage(){
 		imageWriter.writeToImage();
+		return this;
 	}
 
 	/**

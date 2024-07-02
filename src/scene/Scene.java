@@ -35,6 +35,10 @@ public class Scene
 		return this;
 	}
 
+	public AmbientLight getAmbientLight() {
+		return ambientLight;
+	}
+
 	/**
 	 * Set the ambient light of the scene.
 	 * @param ambientLight the given ambient light

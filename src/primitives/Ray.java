@@ -1,6 +1,8 @@
 package primitives;
 
+import java.util.Comparator;
 import java.util.List;
+import geometries.Intersectable.GeoPoint;
 
 /**
  * Ray class that represent a ray in space using a Point and a Vector.
@@ -57,7 +59,9 @@ public class  Ray
 
 		return closest;
 	}
-
+	public GeoPoint findClosestGeoPoint(List<GeoPoint> geoPoint){
+		return geoPoint.stream().min(Comparator.comparingDouble(p->p.point.distance(head))).orElse(null);
+	}
 	@Override
 	public boolean equals(Object obj)
 	{
