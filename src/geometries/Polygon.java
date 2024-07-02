@@ -1,5 +1,6 @@
 package geometries;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static primitives.Util.isZero;
@@ -97,47 +98,37 @@ public class Polygon extends Geometry
 		return plane.getNormal();
 	}
 
-	@Override
-	public List<Point> findIntersections(Ray ray)
-	{
-		// Step 1: Check if the ray intersects with the plane of the polygon
-		List<Point> planeIntersections = plane.findIntersections(ray);
-		if (planeIntersections == null)
-			return null;
 
-		// Step 2: Find the intersection point
-		Point intersectionPoint = planeIntersections.getFirst();
-
-		// Step 3: Check if the intersection point is inside the polygon
-		Vector v1 = vertices.get(1).subtract(vertices.get(0));
-		Vector v2 = intersectionPoint.subtract(vertices.get(0));
-		double sum = v1.crossProduct(v2).normalize().dotProduct(plane.getNormal());
-
-		for (int i = 1; i < vertices.size(); i++)
-		{
-			v1 = vertices.get((i + 1) % vertices.size()).subtract(vertices.get(i));
-			v2 = intersectionPoint.subtract(vertices.get(i));
-			sum += v1.crossProduct(v2).normalize().dotProduct(plane.getNormal());
-		}
-
-		// Step 4: If the intersection point is inside the polygon, return a list containing this point
-		if (isZero(sum - vertices.size()))
-			return List.of(intersectionPoint);
-
-		// Otherwise, return null
-		return null;
-	}
 
 	@Override
-	protected List<GeoPoint> findGeoIntesectionsHelper(Ray ray)
+	public List<GeoPoint> findGeoIntesectionsHelper(Ray ray)
 	{
 		List<Point> intersections = plane.findIntersections(ray);
 		if (intersections == null)
 			return null;
 		Point point = intersections.getFirst();
+		LinkedList<Vector> vectors = new LinkedList<>();
 
-		return List.of(new GeoPoint(this,point));
+		Point prePoint = vertices.get(vertices.size() - 1);
+		try
+		{
+			for (Point vertex : vertices)
+			{
+				vectors.add(vertex.subtract(prePoint).normalize());
+				prePoint = vertex;
+			}
 
+			Vector preVector = vectors.get(vectors.size() - 1);
+			for (Vector vector : vectors) {
+				if (vector.dotProduct(preVector) < 0) {
+					return null;
+				}
+				preVector = vector;
+			}
+		} catch (IllegalArgumentException exception) {
+			return null;
+		}
+		return List.of(new GeoPoint(this, point));
 
 	}
 }

@@ -39,11 +39,6 @@ public class Tube extends RadialGeometry
 		return v.subtract(axis.getDirection().scale(t)).normalize();
 	}
 
-	@Override
-	public List<Point> findIntersections(Ray ray)
-	{
-		return null;
-	}
 
 	@Override
 	protected List<GeoPoint> findGeoIntesectionsHelper(Ray ray)

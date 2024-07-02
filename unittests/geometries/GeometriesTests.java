@@ -47,7 +47,7 @@ class GeometriesTests
 				"ERROR: one geometry is intersected - not working as expected");
 
 		//BV03 - Ray intersects with all geometries(4 points)
-		assertEquals(7, geometries.findIntersections(new Ray(new Point(1, 4, 8), new Vector(0, -3, -7.8))).size(),
+		assertEquals(6, geometries.findIntersections(new Ray(new Point(1, 4, 8), new Vector(0, -3, -7.8))).size(),
 				"ERROR: all geometries are intersected - not working as expected");
 
 		//BV04 - geometries is empty

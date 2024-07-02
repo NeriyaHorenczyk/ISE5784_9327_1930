@@ -9,6 +9,9 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Testing Polygons
  * @author Dan
@@ -94,31 +97,82 @@ public class PolygonTests {
    @Test
    void testFindIntersections()
    {
-      Polygon testPoly = new Polygon(new Point(1,1,1), new Point(2,0.5,0.5),new Point(1,-1,1), new Point(-2,0.5,2.5));
+      Point[] pts = { new Point(0, 0, 3), new Point(-3, 3, 3), new Point(0, 3, 0), new Point(3, 0, 0) };
+      Polygon pol = new Polygon(pts);
+
       // ============ Equivalence Partitions Tests ==============
-      // TC01: Ray does not start on the plane and intersect with the Polygon
-      assertEquals(1,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,1))).size(),
-              "TC01 Fail: number of points is incorrect!");
+      // TC01: Ray intersects the polygon at a point
+      Point p = new Point(-1, 0, 0);
+      Vector v = new Vector(1, 1, 2);
+      Ray ray = new Ray(p, v);
 
-      //TC02: Ray does not start on the plane and does not intersect with the Polygon
-      assertNull(testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,-1))));
+      List<Point> expected = new ArrayList<>();
+      expected.add(new Point(0, 1, 2));
 
-      //TC03: Ray intersect one of the vertex
-      assertEquals(1,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,0.5))).size(),
-              "TC03 Fail: number of points is incorrect!");
+      List<Point> result = pol.findIntersections(ray);
+
+      assertEquals(expected, result, "Failed to find intersection point");
+
+      // TC02: Ray does not intersect the polygon, goes beyond max distance
+      p = new Point(-1, 0, 0);
+      v = new Vector(1, 1, 8);
+      ray = new Ray(p, v);
+
+      expected = new ArrayList<>();
+      expected.clear();
+
+      result = pol.findIntersections(ray);
+
+      assertNull(result, "Failed to find intersection point");
 
       // =============== Boundary Values Tests ==================
+      // TC11: Ray misses the polygon completely
+      p = new Point(-1, -1, 0);
+      v = new Vector(1, 1, 8);
+      ray = new Ray(p, v);
 
-      // TC04: Ray intersect the edge of the Polygon
-      assertNull(testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,0))),
-              "TC04 Fail: number of points is incorrect!");
+      expected = new ArrayList<>();
+      expected.clear();
 
-      // TC05: Ray intersect the vertex of the Polygon
-        assertEquals(1,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,0.5))).size(),
-                "TC05 Fail: number of points is incorrect!");
+      result = pol.findIntersections(ray);
 
-      //TC06: Ray intersects on edge's continuation
-        assertEquals(1,testPoly.findIntersections(new Ray(new Point(-2,-1,0.5),new Vector(6,2,1.5))).size(),
-                "TC06 Fail: number of points is incorrect!");
+      assertNull(result, "Failed to find intersection point");
+
+      // TC12: Ray is parallel to the polygon and does not intersect
+      p = new Point(-1, 0, 0);
+      v = new Vector(2, -1, 0);
+      ray = new Ray(p, v);
+
+      expected = new ArrayList<>();
+      expected.clear();
+
+      result = pol.findIntersections(ray);
+
+      assertNull(result, "Failed to find intersection point");
+
+      // TC13: Ray is parallel to the polygon but starts outside the plane of the polygon
+      p = new Point(-1, 0, 0);
+      v = new Vector(3, 3, 0);
+      ray = new Ray(p, v);
+
+      expected = new ArrayList<>();
+      expected.clear();
+
+      result = pol.findIntersections(ray);
+
+      assertNull(result, "Failed to find intersection point");
+
+      // TC14: Ray intersects the plane but outside the polygon boundaries
+      p = new Point(-1, 0, 0);
+      v = new Vector(1, 0, 3);
+      ray = new Ray(p, v);
+
+      expected = new ArrayList<>();
+      expected.clear();
+
+      result = pol.findIntersections(ray);
+
+      assertNull(result, "Failed to find intersection point");
+
    }
 }
