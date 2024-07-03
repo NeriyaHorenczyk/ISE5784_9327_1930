@@ -3,23 +3,23 @@ package geometries;
 import primitives.Point;
 import primitives.Ray;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Geometries class that represents a collection of geometries.
  */
 public class Geometries extends Intersectable
 {
-	private final List<Intersectable> interGeometries = new LinkedList<>();
+
+	private final List<Intersectable> intersectables=new LinkedList<>();;
+
 
 	/**
 	 * Default constructor that initializes the list of geometries.
 	 */
 	public Geometries()
 	{
+		//this.intersectables=new LinkedList<>();
 	}
 	/**
 	 * Constructor that initializes the list of geometries.
@@ -36,7 +36,8 @@ public class Geometries extends Intersectable
 	 */
 	public void add(Intersectable... geometries)
 	{
-		interGeometries.addAll(Arrays.asList(geometries));
+		Collections.addAll(this.intersectables, geometries);
+
 	}
 
 
@@ -44,19 +45,20 @@ public class Geometries extends Intersectable
 	@Override
 	protected List<GeoPoint> findGeoIntesectionsHelper(Ray ray)
 	{
-		List<GeoPoint> intersections = null;
-		for (Intersectable geometry : interGeometries)
-		{
-			List<GeoPoint> geometryIntersections = geometry.findGeoIntersections(ray);
-			if (geometryIntersections != null)
-			{
-				if (intersections == null)
-				{
-					intersections = new ArrayList<>();
+
+
+		List<GeoPoint> result = null;
+		for (Intersectable shape : intersectables) {
+
+			List<GeoPoint> shapePoints = shape.findGeoIntesectionsHelper(ray);
+			if (shapePoints != null) {
+				if (result == null) {
+					result = new LinkedList<>();
 				}
-				intersections.addAll(geometryIntersections);
+				result.addAll(shapePoints);
 			}
 		}
-		return intersections;
+		return result;
+
 	}
 }

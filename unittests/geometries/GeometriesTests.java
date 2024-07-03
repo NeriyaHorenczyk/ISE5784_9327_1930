@@ -5,54 +5,58 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.Comparator;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class GeometriesTests
-{
+class GeometriesTests {
+	Plane pl = new Plane(new Point(1, 2, 8), new Point(6, 2, 8), new Point(-2, 5, 8));
+	Triangle triangle1 = new Triangle(new Point(5, 4, 2), new Point(1, 0, 2), new Point(-2, 5, 2));
+	Triangle triangle2 = new Triangle(new Point(5, 4, 5), new Point(1, 0, 5), new Point(-2, 5, 5));
+	Sphere sphere = new Sphere(5.0, new Point(1, 0, 0));
+	Geometries emptyList = new Geometries();
+	Geometries geometries = new Geometries(
+			pl,
+			triangle1,
+			triangle2,
+			sphere);
+	Ray someIntersect = new Ray(new Point(3, 0, 0), new Vector(0, 0, 1));
+	Ray intersectsAll = new Ray(new Point(1, 2, 0), new Vector(0, 0, 1));
+	Ray noneIntersect = new Ray(new Point(20, 0, 0), new Vector(0, 10, 0));
+	Ray intersectsOne = new Ray(new Point(-1, 0, 0), new Vector(0, 1, 0));
 
 
-	/**
-	 * Test method for {@link geometries.Geometries#findIntersections(primitives.Ray)}.
-	 */
 	@Test
-	void testFindIntersections()
-	{
+	void testAdd() {
+	}
+
+	@Test
+	void testFindIntersections() {
 		// ============ Equivalence Partitions Tests ==============
-		// TC01: Some of the geometries intersect
+		//TC01: some of them intersect
+		final var result01 = geometries.findIntersections(someIntersect)
+				.stream().sorted(Comparator.comparingDouble(p -> p.distance(someIntersect.getHead())))
+				.toList();
+		assertEquals(2, result01.size(), "Wrong number of points");
 
 		// =============== Boundary Values Tests ==================
-		// TC02: None of the geometries intersect
-		// TC03: All geometries intersect
-		// TC04: Only one geometry intersect
-		// TC05: Empty geometries list
+		//TC11: no intersections
+		assertNull(geometries.findIntersections(noneIntersect), "Wrong number of points");
 
-		// TC01: Some of the geometries intersect
-		Geometries geometries = new Geometries(new Sphere(1,new Point(1, 1, 0)),
-				new Plane(new Point(1, 0, 0), new Point(0, 1, 0), new Point(0, 0, 1)),
-				new Triangle(new Point(0, 1, 1), new Point(2, 1,1), new Point(1, 1, 0)),
-				new Polygon(new Point(0, 2, 1), new Point(1, 2, 0), new Point(2, 2, 0), new Point(1, 2, 4)));
+		//TC12: 1 intersection
+		final var result12 = geometries.findIntersections(intersectsOne);
 
-		assertEquals(3, geometries.findIntersections(new Ray(new Point(0, 2, 0), new Vector(2, -2, 0.5))).size(), "Ray intersects with a Sphere and plane but not with a Triangle");
+		assertEquals(1, result12.size(),
+				"Wrong number of points there should only be one intersection");
 
-		//====================== Boundary Values test ==================================================================
-		// TC02: no geometry is intersected (0 points)
-		geometries.add(new Sphere(3d, new Point(1, 2, 3)));
-		assertNull(geometries.findIntersections(new Ray(new Point(6, 7, 8), new Vector(2, 0, -2))),
-				"ERROR: no geometry is intersected - not working as expected");
+		//TC13: all intersect
+		final var result13 = geometries.findIntersections(intersectsAll)
+				.stream().sorted(Comparator.comparingDouble(p -> p.distance(intersectsAll.getHead())))
+				.toList();
+		assertEquals(4, result13.size(), "Wrong number of points");
 
-
-
-		//BV02 - Ray intersects with only one geometry(plane)
-		assertEquals(1, geometries.findIntersections(new Ray(new Point(6, 7, 8), new Vector(0, -1, -2))).size(),
-				"ERROR: one geometry is intersected - not working as expected");
-
-		//BV03 - Ray intersects with all geometries(4 points)
-		assertEquals(6, geometries.findIntersections(new Ray(new Point(1, 4, 8), new Vector(0, -3, -7.8))).size(),
-				"ERROR: all geometries are intersected - not working as expected");
-
-		//BV04 - geometries is empty
-		geometries = new Geometries();
-		assertNull(geometries.findIntersections(new Ray(new Point(0.5, 4, 0.5), new Vector(0, -1, 0))), "geometries is empty");
-
+		//TC14: empty collection
+		assertNull(emptyList.findIntersections(intersectsOne),
+				"doesn't return null when the collection is empty");
 	}
 }
