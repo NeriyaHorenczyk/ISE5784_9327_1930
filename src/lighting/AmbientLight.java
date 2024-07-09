@@ -12,14 +12,22 @@ public class AmbientLight extends Light
 	public static AmbientLight NONE = new AmbientLight(Color.BLACK, Double3.ZERO);
 
 
-	//נריה הבמה שלך
+	/**
+	 * Constructor
+	 * @param IA The intensity of the light
+	 * @param KA The attenuation factor
+	 * */
 	public AmbientLight(Color IA, Double3 KA)
 	{
 		super(IA.scale(KA));
 	}
 
-	//נריה הבמה שלך
 
+	/**
+	 * Constructor
+	 * @param IA The intensity of the light
+	 * @param KA The attenuation factor
+	 * */
 	public AmbientLight(Color IA, double KA)
 	{
 		super(IA.scale(KA));

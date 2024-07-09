@@ -6,13 +6,21 @@ import primitives.*;
 //תיעוד
 import static primitives.Util.alignZero;
 
+/**
+ * SpotLight class represents the spot light in the scene
+ */
 public class SpotLight extends PointLight {
 
     private final Vector direction;
 
     private double narrowBeam = 1;
 
-
+    /**
+     * Constructor
+     * @param intensity The intensity of the light
+     * @param position The position of the light
+     * @param direction The direction of the light
+     * */
     public SpotLight(Color intensity, Point position, Vector direction) {
         super(intensity, position);
         this.direction = direction.normalize();
@@ -48,7 +56,11 @@ public class SpotLight extends PointLight {
                 : Math.pow(cos, narrowBeam));
     }
 
-
+    /**
+     * Set the narrow beam parameter
+     * @param narrowBeam The narrow beam parameter
+     * @return the Spot Light object
+     */
     public SpotLight setNarrowBeam(double narrowBeam) {
         this.narrowBeam = narrowBeam;
         return this;

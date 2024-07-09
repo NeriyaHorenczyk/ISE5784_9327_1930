@@ -1,13 +1,22 @@
 package lighting;
 
 import primitives.*;
-//להוסיף תיעוד
 
+/**
+ * DirectionalLight class represents the directional light in the scene
+ */
 public class DirectionalLight extends Light implements LightSource {
 
+    /**
+     * The direction of the light
+     */
     private Vector direction;
 
-
+    /**
+     * Constructor
+     * @param intensity The intensity of the light
+     * @param direction The direction of the light
+     * */
     public DirectionalLight(Color intensity, Vector direction) {
         super(intensity);
         this.direction = direction.normalize();

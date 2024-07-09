@@ -2,7 +2,10 @@ package lighting;
 import primitives.*;
 
 
-//תיעוד
+/**
+ * PointLight class represents the point light in the scene
+ */
+
 public class PointLight extends Light implements LightSource {
     protected Point position;
     private double kC = 1;
@@ -10,24 +13,41 @@ public class PointLight extends Light implements LightSource {
     private double kQ = 0;
 
 
+    /**
+     * Constructor
+     * @param intensity The intensity of the light
+     * @param position The position of the light
+     * */
     public PointLight(Color intensity, Point position) {
         super(intensity);
         this.position = position;
     }
 
-
+    /**
+     * Set the kC parameter
+     * @param kC The constant attenuation factor
+     * @return the Point Light object
+     */
     public PointLight setKc(double kC) {
         this.kC = kC;
         return this;
     }
 
-
+    /**
+     * Set the kL parameter
+     * @param kL The linear attenuation factor
+     * @return the Point Light object
+     */
     public PointLight setKl(double kL) {
         this.kL = kL;
         return this;
     }
 
-
+    /**
+     * Set the kQ parameter
+     * @param kQ The quadratic attenuation factor
+     * @return the Point Light object
+     */
     public PointLight setKq(double kQ) {
         this.kQ = kQ;
         return this;

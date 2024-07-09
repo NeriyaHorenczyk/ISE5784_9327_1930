@@ -62,8 +62,12 @@ public class Scene
 		this.geometries = geometry;
 		return this;
 	}
-	//תיעוד
 
+	/**
+	 * Set the lights of the scene.
+	 * @param lights the given list of lights
+	 * @return the scene
+	 */
 	public Scene setLights(List<LightSource> lights) {
 		this.lights = lights;
 		return this;
