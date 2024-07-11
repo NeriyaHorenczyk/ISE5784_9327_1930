@@ -43,15 +43,14 @@ public class SimpleRayTracer extends RayTracerBase
 		Vector delta = n.scale(n.dotProduct(lightDirection) > 0 ? DELTA : -DELTA);
 		Point point = gp.point.add(delta);
 		Ray shadowRay = new Ray(point, lightDirection);
-		List<GeoPoint> intersections = scene.geometries.findGeoIntersections(shadowRay);
+		List<GeoPoint> intersections = scene.geometries.findGeoIntersections(shadowRay,ls.getDistance(point));
 		return intersections == null;
 	}
 
 	/**
-	 * Calculates the color at the specified point using the ambient light in the scene.
-	 *
-	 * @return The color at the specified point.
-	 * @geoPoint geoPoint The point at which to calculate the color.
+
+
+
 	 */
 	private Color calcColor(GeoPoint geoPoint, Ray ray)
 	{
@@ -75,7 +74,7 @@ public class SimpleRayTracer extends RayTracerBase
 		if (nv == 0)
 			return Color.BLACK;
 
-		int nShininess = intersection.geometry.getMaterial().shininess;
+
 
 		Double3 kd = intersection.geometry.getMaterial().kD, ks = intersection.geometry.getMaterial().kS;
 
@@ -88,51 +87,50 @@ public class SimpleRayTracer extends RayTracerBase
 			if ((nl * nv > 0) && unshaded(intersection, l, n, lightSource))
 			{ // sign(nl) == sign(nv) //checks if light direction and camera direction is the same
 				Color lightIntensity = lightSource.getIntensity(intersection.point);
-				color = color.add(calcDiffuse(kd, nl, lightIntensity),
-						calcSpecular(ks, l, n, nl, v, nShininess, lightIntensity));
+				color = color.add(lightIntensity.scale(calcDiffuse(kd, nl).add(
+						calcSpecular(intersection.geometry.getMaterial(), n,l, nl, v))));
 			}
 		}
 		return color;
 	}
 
 	/**
-	 * Calculates the diffuse component of light reflection.
-	 *
-	 * @param kd             The diffuse reflection coefficient. חדות
-	 * @param nl             The dot product between the normal vector and the light
-	 *                       vector.
-	 * @param lightIntensity The intensity of the light source.
-	 * @return The color contribution from the diffuse reflection.
+
 	 */
-	private Color calcDiffuse(Double3 kd, double nl, Color lightIntensity)
+	private Double3 calcDiffuse(Double3 kd, double nl)
 	{
-		return lightIntensity.scale(kd.scale(Math.abs(nl)));
+		return (kd.scale(Math.abs(nl)));
 	}
 
+
 	/**
-	 * Calculates the specular component of light reflection.
-	 *
-	 * @param ks             The specular reflection coefficient.פיזור
-	 * @param l              The light vector.
-	 * @param n              The normal vector.
-	 * @param nl             The dot product between the normal vector and the light
-	 *                       vector.
-	 * @param v              The view vector.
-	 * @param nShininess     The shininess coefficient.
-	 * @param lightIntensity The intensity of the light source.
-	 * @return The color contribution from the specular reflection.
+
+
 	 */
-	private Color calcSpecular(Double3 ks, Vector l, Vector n, double nl, Vector v, int nShininess,
-	                           Color lightIntensity)
-	{
-		Vector r = l.add(n.scale(-2 * nl)); // nl must not be zero!
-		double minusVR = -alignZero(r.dotProduct(v));
-		if (minusVR <= 0)
-		{
-			return new primitives.Color(Color.BLACK.getColor()); // View from direction opposite to r vector
+	private Double3 calcSpecular(Material material, Vector n, Vector l, double nl, Vector v) {
+		Double3 ks = material.kS;
+		double vr = alignZero(v.scale(-1).dotProduct(l.subtract(n.scale(2 * nl)).normalize()));
+		vr = (vr > 0) ? vr : 0; // Ensure vr is non-negative
+		if (vr <= 0) return Double3.ZERO; // No specular reflection in this case
+
+		double result = 1.0;
+		for (int i = 0; i < material.shininess; i++) {
+			result *= vr;
 		}
-		return lightIntensity.scale(ks.scale(Math.pow(minusVR, nShininess)));
+
+		return ks.scale(result);
 	}
+//	private Color calcSpecular(Double3 ks, Vector l, Vector n, double nl, Vector v, int nShininess,
+//	                           Color lightIntensity)
+//	{
+//		Vector r = l.add(n.scale(-2 * nl)); // nl must not be zero!
+//		double minusVR = -alignZero(r.dotProduct(v));
+//		if (minusVR <= 0)
+//		{
+//			return new primitives.Color(Color.BLACK.getColor()); // View from direction opposite to r vector
+//		}
+//		return lightIntensity.scale(ks.scale(Math.pow(minusVR, nShininess)));
+//	}
 
 
 	//---------------------------override functions-------------------------

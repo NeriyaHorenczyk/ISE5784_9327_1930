@@ -67,10 +67,19 @@ public abstract class Intersectable
 	 */
 	public List<Point> findIntersections(Ray ray)
 	{
-		var geoList = findGeoIntersections(ray);
-		return geoList == null ? null : geoList.stream().map(gp -> gp.point).toList();
+		return findIntersections(ray,Double.POSITIVE_INFINITY);
 	}
 
+	/**
+	 *
+
+
+	 */
+	public List<Point> findIntersections(Ray ray,double maxDistance)
+	{
+		var geoList = findGeoIntersections(ray,maxDistance);
+		return geoList == null ? null : geoList.stream().map(gp -> gp.point).toList();
+	}
 //	/**
 //	 * findGeoIntersections function that finds all the intersections of the given ray with the shape.
 //	 * using the helper function
