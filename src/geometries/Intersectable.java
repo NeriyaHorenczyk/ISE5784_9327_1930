@@ -71,21 +71,33 @@ public abstract class Intersectable
 		return geoList == null ? null : geoList.stream().map(gp -> gp.point).toList();
 	}
 
-	/**
-	 * findGeoIntersections function that finds all the intersections of the given ray with the shape.
-	 * using the helper function
-	 * @param ray the given ray parameter
-	 * @return list of all the intersections points of the ray with the shape.
-	 */
+//	/**
+//	 * findGeoIntersections function that finds all the intersections of the given ray with the shape.
+//	 * using the helper function
+//	 * @param ray the given ray parameter
+//	 * @return list of all the intersections points of the ray with the shape.
+//	 */
+//	public final List<GeoPoint> findGeoIntersections(Ray ray)
+//	{
+//		return findGeoIntesectionsHelper(ray);
+//	}
+//
+//	/**
+//	 * findGeoIntesectionsHelper function that finds all the intersections of the given ray with the shape.
+//	 * @param ray the given ray parameter
+//	 * @return list of all the intersections points of the ray with the shape.
+//	 */
+//	protected abstract List<GeoPoint> findGeoIntesectionsHelper(Ray ray);
+
 	public final List<GeoPoint> findGeoIntersections(Ray ray)
 	{
-		return findGeoIntesectionsHelper(ray);
+		return findGeoIntersections(ray, Double.POSITIVE_INFINITY);
 	}
 
-	/**
-	 * findGeoIntesectionsHelper function that finds all the intersections of the given ray with the shape.
-	 * @param ray the given ray parameter
-	 * @return list of all the intersections points of the ray with the shape.
-	 */
-	protected abstract List<GeoPoint> findGeoIntesectionsHelper(Ray ray);
+	public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance)
+	{
+		return findGeoIntersectionsHelper(ray, maxDistance);
+	}
+	protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance);
+
 }

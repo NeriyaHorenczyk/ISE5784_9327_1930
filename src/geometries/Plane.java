@@ -7,6 +7,7 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -62,7 +63,7 @@ public class Plane extends Geometry
 	}
 
 	@Override
-	public List<GeoPoint> findGeoIntesectionsHelper(Ray ray)
+	public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance)
 	{
 		//q -p=0
 		if (q.equals(ray.getHead()))
@@ -74,7 +75,9 @@ public class Plane extends Geometry
 		double t = normal.dotProduct(q.subtract(ray.getHead())) / normal.dotProduct(ray.getDirection());
 		if (isZero(t) || t <= 0)
 			return null;
-		return List.of(new GeoPoint(this, ray.getPoint(t)));
+		return (alignZero(t) <= 0 || alignZero(maxDistance - t) <= 0) ? null
+				: List.of(new GeoPoint(this, ray.getPoint(t)));
+
 
 	}
 }

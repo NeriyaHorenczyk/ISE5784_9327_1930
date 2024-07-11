@@ -101,7 +101,7 @@ public class Polygon extends Geometry
 
 
 	@Override
-	public List<GeoPoint> findGeoIntesectionsHelper(Ray ray)
+	public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance)
 	{
 		List<Point> planeIntersections = plane.findIntersections(ray);
 
@@ -130,6 +130,34 @@ public class Polygon extends Geometry
 		}
 		return List.of(new GeoPoint(this, intersectionPoint));
 
+		/*
+		var points = this.plane.findGeoIntersections(ray, maxDistance);
+		// Only check point if the ray intersects the plane of the polygon.
+		if (points == null)
+			return null;
+
+		Point p0 = ray.getP0();
+		Vector v = ray.getDir();
+		List<Vector> vectors = new LinkedList<>();
+		// Construct vectors to the vertices
+		for (Point p : this.vertices) {
+			vectors.add(p.subtract(p0));
+		}
+		int vSize = vectors.size();
+		// Cross product each adjacent pair of vectors and check they all share the same
+		// sign
+		double normal = alignZero(vectors.get(vSize - 1).crossProduct(vectors.get(0)).dotProduct(v));
+		if (isZero(normal))
+			return null;
+		boolean sign = normal > 0;
+		for (int i = 0; i < vSize - 1; i++) {
+			normal = alignZero(vectors.get(i).crossProduct(vectors.get(i + 1)).dotProduct(v));
+			if ((normal > 0) ^ sign || isZero(normal))
+				return null;
+		}
+		points.get(0).geometry = this;
+		return points;
+		 */
 
 	}
 }
