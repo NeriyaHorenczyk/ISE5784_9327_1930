@@ -11,6 +11,7 @@ import static primitives.Util.alignZero;
 
 public class SimpleRayTracer extends RayTracerBase{
 
+    private static final double Delta = 0.1;
 
     //-----------------------------constructor-------------------------
 
@@ -20,6 +21,22 @@ public class SimpleRayTracer extends RayTracerBase{
      */
     public SimpleRayTracer(Scene scene) {
         super(scene);
+    }
+
+    /**
+     * Checks if the point is shaded by another geometry in the scene.
+     * @param gp The point to check if it is shaded.
+     * @param l The vector from the point to the light source.
+     * @param n The normal vector at the point.
+     * @return True if the point is not shaded by another geometry, false otherwise.
+     */
+
+    private boolean unshaded(GeoPoint gp, Vector l, Vector n)
+    {
+        Vector lightDirection = l.scale(-1); // from point to light source
+        Ray lightRay = new Ray(gp.point, lightDirection);
+        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
+	    return intersections == null;
     }
 
     /**
@@ -57,7 +74,7 @@ public class SimpleRayTracer extends RayTracerBase{
             Vector l = lightSource.getL(intersection.point);
             double nl = alignZero(n.dotProduct(l));
 
-            if (nl * nv > 0) { // sign(nl) == sign(nv) //checks if light direction and camera direction is the same
+            if ((nl * nv > 0) && unshaded(intersection,l, intersection.geometry.getNormal(intersection.point))) { // sign(nl) == sign(nv) //checks if light direction and camera direction is the same
                 Color lightIntensity = lightSource.getIntensity(intersection.point);
                 color = color.add(calcDiffuse(kd, nl, lightIntensity),
                         calcSpecular(ks, l, n, nl, v, nShininess, lightIntensity));
