@@ -120,17 +120,6 @@ public class SimpleRayTracer extends RayTracerBase
 
 		return ks.scale(result);
 	}
-//	private Color calcSpecular(Double3 ks, Vector l, Vector n, double nl, Vector v, int nShininess,
-//	                           Color lightIntensity)
-//	{
-//		Vector r = l.add(n.scale(-2 * nl)); // nl must not be zero!
-//		double minusVR = -alignZero(r.dotProduct(v));
-//		if (minusVR <= 0)
-//		{
-//			return new primitives.Color(Color.BLACK.getColor()); // View from direction opposite to r vector
-//		}
-//		return lightIntensity.scale(ks.scale(Math.pow(minusVR, nShininess)));
-//	}
 
 
 	//---------------------------override functions-------------------------

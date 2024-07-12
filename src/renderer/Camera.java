@@ -228,7 +228,7 @@ public class Camera implements Cloneable
 		 */
 		public Builder setDirection(Vector to, Vector up) throws IllegalArgumentException
 		{
-			if (to.dotProduct(up) != 0)
+			if (!isZero(to.dotProduct(up)))
 			{
 				throw new IllegalArgumentException("vectors are not orthogonal");
 			}

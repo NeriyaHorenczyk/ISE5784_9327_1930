@@ -1,4 +1,4 @@
-package unittests.geometries;
+package geometries;
 
 import geometries.Plane;
 import geometries.Polygon;
@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,6 +60,19 @@ class TriangleTests {
 
 	}
 
+	@Test
+	void testFindIntersectionsWithDistance() {
+		Triangle triangle = new Triangle(new Point(-10, 0, 0), new Point(10, 0, 0), new Point(0, 0, 10));
 
+		// Test case 01: Ray intersects the triangle within a large distance
+		List<Point> result = triangle.findIntersections(new Ray(new Point(0, -2, 2), new Vector(0, 1, 1)), 500);
+		// TC01: Expected result size is 1
+		assertEquals(1, result.size(), "Error: Ray should intersect the triangle within the distance (TC01)");
+
+		// Test case 02: Ray does not intersect the triangle within a very small distance
+		result = triangle.findIntersections(new Ray(new Point(0, -2, 2), new Vector(0, 1, 1)), 1);
+		// TC02: Expected result is null (no intersection within the distance)
+		assertNull(result, "Error: Ray should not intersect the triangle within the distance (TC02)");
+	}
 
 }

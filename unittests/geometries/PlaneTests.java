@@ -5,6 +5,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlaneTests
@@ -78,4 +80,22 @@ class PlaneTests
 		assertNull(plane.findIntersections(ray), "ray is neither orthogonal nor parallel to plane and starts in plane and starts at reference point");
 
 	}
+
+	@Test
+	void testFindIntersectionsWhitDistance() {
+		Ray ray = new Ray(new Point(1, 1, 5), new Vector(-1, 1, -3));
+		Plane plane = new Plane(new Point(1, 1, 1), new Point(1, 0, 0), new Point(0, 1, 0));
+
+		// Test case 01: Ray intersects the plane within the given distance
+		List<Point> result = plane.findIntersections(ray, 500);
+		// TC01: Expected result size is 1
+		assertEquals(1, result.size(), "Error: Ray should intersect the plane within the distance (TC01)");
+
+		// Test case 02: Ray does not intersect the plane within the given distance
+		result = plane.findIntersections(ray, 1);
+		// TC02: Expected result is null (no intersection within the distance)
+		assertNull(result, "Error: Ray should not intersect the plane within the distance (TC02)");
+	}
+
+
 }

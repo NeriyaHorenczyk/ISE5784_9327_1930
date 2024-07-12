@@ -5,6 +5,7 @@ package primitives;
  */
 public class Vector extends Point
 {
+    public final static Vector Y=new Vector(0,1,0);
     /**
      *A double parameter Constructor that builds a new vector with three double values
      *that represent the three valus of the Vector.
