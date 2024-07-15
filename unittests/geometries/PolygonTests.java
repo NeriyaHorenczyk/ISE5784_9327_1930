@@ -176,24 +176,5 @@ public class PolygonTests {
 
    }
 
-//   @Test
-//   void testFindIntersectionsWithDistance() {
-//      // Define the polygon for testing
-//      Polygon polygon = new Polygon(
-//              new Point(0, 1, 0),
-//              new Point(1, 1, 0),
-//              new Point(1, 0, 0),
-//              new Point(-1, -1, 0)
-//      );
-//
-//      // Test case 01: Ray intersects the polygon within a very large distance
-//      List<Point> result = polygon.findIntersections(new Ray(new Point(1, 1, 1), new Vector(-0.5, -0.5, -2)), 500);
-//      assertEquals(1, result.size(), "Error: Ray should intersect the polygon within the distance (TC01)");
-//
-//      // Test case 02: Ray does not intersect the polygon within a very small distance
-//      result = polygon.findIntersections(new Ray(new Point(1, 1, 1), new Vector(-0.5, -0.5, -2)), 1);
-//      assertNull(result, "Error: Ray should not intersect the polygon within the distance (TC02)");
-//   }
-
 
 }
