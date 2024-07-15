@@ -9,7 +9,16 @@ public class Material {
     public double kA;
     public Double3 kD = Double3.ZERO;
     public Double3 kS = Double3.ZERO;
+
+
+    /**
+     * kT is the transparency factor
+     */
     public Double3 kT = Double3.ZERO;
+
+    /**
+     * kR is the reflection factor
+     */
     public Double3 kR = Double3.ZERO;
     public int shininess = 0;
 
@@ -57,7 +66,7 @@ public class Material {
 
     /**
      * set the kT parameter
-     * @param kT The ambient attenuation factor as a double parameter
+     * @param kT The transparency factor as a double parameter
      * @return the Material object
      */
     public Material setKT(double kT) {
@@ -67,7 +76,7 @@ public class Material {
 
     /**
      * set the kT parameter
-     * @param kT The ambient attenuation factor as a double3 parameter
+     * @param kT The transparency factor as a double3 parameter
      * @return the Material object
      */
     public Material setKT(Double3 kT) {
