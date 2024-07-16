@@ -33,6 +33,7 @@ public class  Ray
 		double nv = n.dotProduct(r);
 		if(!Util.isZero(nv))
 			head = head.add(n.scale(nv > 0 ? DELTA : -DELTA));
+
 	}
 
 	public Point getHead()
@@ -59,6 +60,7 @@ public class  Ray
 
 	public GeoPoint findClosestGeoPoint(List<GeoPoint> geoPoint)
 	{
+		if(geoPoint==null) return null;
 		return geoPoint.stream().min(Comparator.comparingDouble(p->p.point.distance(head))).orElse(null);
 	}
 	@Override
