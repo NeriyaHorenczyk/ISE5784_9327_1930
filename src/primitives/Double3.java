@@ -117,4 +117,14 @@ public class Double3 {
     *               triad, false otherwise
     */
    public boolean lowerThan(Double3 other) { return d1 < other.d1 && d2 < other.d2 && d3 < other.d3; }
+
+   /**
+    * Checks whether all the numbers are greater than a test number
+    * @param  minCalcColorK the test number
+    * @return   true if all the numbers are greater than k, false otherwise
+    */
+	public boolean greaterThan(double minCalcColorK)
+	{
+        return d1 > minCalcColorK && d2 > minCalcColorK && d3 > minCalcColorK;
+	}
 }

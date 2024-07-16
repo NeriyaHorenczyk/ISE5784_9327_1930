@@ -9,6 +9,10 @@ import geometries.Intersectable.GeoPoint;
  */
 public class  Ray
 {
+
+	private static final double DELTA = 0.1;
+
+
 	private Point head;
 	private Vector direction;
 
@@ -21,6 +25,14 @@ public class  Ray
 	{
 		head = p;
 		direction = v.normalize();
+	}
+
+	public Ray(Point point, Vector r, Vector n)
+	{
+		this(point, r);
+		double nv = n.dotProduct(r);
+		if(!Util.isZero(nv))
+			head = head.add(n.scale(nv > 0 ? DELTA : -DELTA));
 	}
 
 	public Point getHead()
