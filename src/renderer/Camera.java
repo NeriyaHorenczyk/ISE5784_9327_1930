@@ -302,6 +302,20 @@ public class Camera implements Cloneable
 		}
 
 
+		/**
+		 * rotate the camera view to the given point
+		 *
+		 * @param p point to watch there
+		 * @return the builder
+		 */
+		public Builder lookAt(Point p) { // better name: lookAt
+			camera.vTo = p.subtract(camera.getPosition()).normalize();
+			// vector Y with little angle so it will be perpendicular to vTo
+			// TODO: make sure this calculation is correct
+			camera.vRight = Vector.Y.crossProduct(camera.vTo).normalize();
+			camera.vUp = camera.vRight.crossProduct(camera.vTo).normalize();
+			return this;
+		}
 	}
 
 	@Override
