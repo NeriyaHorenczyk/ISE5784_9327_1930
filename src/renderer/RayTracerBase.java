@@ -4,6 +4,8 @@ import primitives.Color;
 import primitives.Ray;
 import scene.Scene;
 
+import java.util.List;
+
 /**
  * RayTracerBase class represents a base class for ray tracing.
  */
@@ -27,4 +29,7 @@ abstract class RayTracerBase
 	 * @return the color of the pixel
 	 */
 	abstract public Color traceRay(Ray ray);
+
+	abstract public Color traceRay(List<Ray> rays);
+
 }

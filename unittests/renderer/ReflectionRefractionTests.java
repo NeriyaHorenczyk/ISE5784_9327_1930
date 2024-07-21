@@ -296,4 +296,44 @@ public class ReflectionRefractionTests
 
 		cam.renderImage().writeToImage();
 	}
+
+
+	@Test
+	void antiAlisingTest()
+	{
+		// Build a pyramid
+		Geometry side1 = new Triangle(new Point(0, 0, 0), new Point(100, 0, 0), new Point(50, 50, 100))
+				.setEmission(new Color(0, 0, 0)).setMaterial(new Material().setKD(0.8).setKS(0.2).setShininess(60));
+		Geometry side2 = new Triangle(new Point(100, 0, 0), new Point(50, 100, 0), new Point(50, 50, 100))
+				.setEmission(new Color(0, 0, 0)).setMaterial(new Material().setKD(0.8).setKS(0.2).setShininess(60));
+		Geometry side3 = new Triangle(new Point(50, 100, 0), new Point(0, 0, 0), new Point(50, 50, 100))
+				.setEmission(new Color(0, 0, 0)).setMaterial(new Material().setKD(0.8).setKS(0.2).setShininess(60));
+
+		Geometry base = new Plane(new Point(0, 1, 0), new Point(1, 0, 0), new Point(1, 1, 0))
+				.setEmission(new Color(0, 127, 0)).setMaterial(new Material().setKD(0.8).setKS(0.2).setShininess(60).setKR(0.4));
+
+		Geometry sphere = new Sphere(25, new Point(80, 200, 100))
+				.setEmission(new Color(127, 0, 200)).setMaterial(new Material().setKD(0.8).setKS(0.2).setShininess(60));
+
+		Scene scene = new Scene("Amazing image - Anti Alising")
+				.setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.3)));
+
+		scene.geometries.add(side1, side2, side3, base, sphere);
+
+		// add light-blue sphere around all the scene
+		scene.geometries.add(new Sphere(1000, new Point(0, 0, 0))
+				.setEmission(new Color(0, 0, 127)).setMaterial(new Material().setKD(0.5).setKS(0.5).setShininess(100).setKR(0.5)));
+
+		scene.lights.add(new SpotLight(new Color(500, 300, 0), new Point(50, 50, 150), new Vector(0, 0, -1)).setKl(0.0001).setKq(0.000005));
+
+		Camera cam = Camera.getBuilder()
+				.setRayTracer(new SimpleRayTracer(scene))
+				.setLocation(new Point(-700, -700, 30))
+				.setDirection(new Vector(1, 1, 0), new Vector(0, 0, 1))
+				.setVpSize(200, 200).setVpDistance(1000)
+				.setImageWriter(new ImageWriter("antiAllisingTest", 1000, 1000))
+				.build();
+
+		cam.renderImageAntiAlising().writeToImage();
+	}
 }

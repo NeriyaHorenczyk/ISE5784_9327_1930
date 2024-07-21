@@ -5,6 +5,8 @@ import primitives.Point;
 import primitives.Vector;
 import primitives.Ray;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.MissingResourceException;
 
 import static primitives.Util.isZero;
@@ -22,10 +24,10 @@ public class Camera implements Cloneable
 	private double width = 0.0;
 	private double distance = 0.0;
 	private ImageWriter imageWriter;
-	private  RayTracerBase rayTracer;
+	private RayTracerBase rayTracer;
 
 
-	private Point pCenter;
+	private Point pCenter; // center of the view plane
 
 	/**
 	 * getPosition function returns the camera position.
@@ -143,6 +145,43 @@ public class Camera implements Cloneable
 	}
 
 	/**
+	 * constructRayThroughPixel function creates rays from the camera to a specific pixel in the view plane.
+	 * The rays are spread out within the pixel.
+	 *
+	 * @param nX      - number of pixels in the x-axis.
+	 * @param nY      - number of pixels in the y-axis.
+	 * @param j       - the pixel number in the x-axis.
+	 * @param i       - the pixel number in the y-axis.
+	 * @param samples - the number of rays to generate within the pixel.
+	 * @return the list of rays from the camera to the pixel.
+	 */
+
+	public List<Ray> constructRayThroughPixel(int nX, int nY, int j, int i, int samples)
+	{
+		List<Ray> rays = new ArrayList<>();
+
+		// Calculate the size of a pixel
+		double Rx = width / nX;
+		double Ry = height / nY;
+
+		// Calculate the center of the pixel
+		double Yi = -(i - nY / 2d) * Ry + Ry / 2d;
+		double Xj = (j - nX / 2d) * Rx + Rx / 2d;
+
+		// Generate multiple rays spread out evenly within the pixel
+		for (int p = 0; p < samples; p++)
+			for (int q = 0; q < samples; q++)
+			{
+				double x = Xj - Rx / 2 + (p + 0.5) * Rx / samples;
+				double y = Yi - Ry / 2 + (q + 0.5) * Ry / samples;
+				Point Pij = pCenter.add(vRight.scale(x)).subtract(vUp.scale(y));
+				rays.add(new Ray(position, Pij.subtract(position)));
+			}
+
+		return rays;
+	}
+
+	/**
 	 * castRay function casts a ray from the camera to a specific pixel in the view plane.
 	 *
 	 * @param nX     - number of pixels in the x-axis.
@@ -150,21 +189,47 @@ public class Camera implements Cloneable
 	 * @param row    - the pixel number in the x-axis.
 	 * @param column - the pixel number in the y-axis.
 	 */
-	public void castRay(int nX,int nY,int row,int column){
-		Ray ray=constructRay(nX,nY,row,column);
-		Color pixelColor =rayTracer.traceRay(ray);
-		imageWriter.writePixel(row,column,pixelColor);
+	public void castRay(int nX, int nY, int row, int column)
+	{
+		Ray ray = constructRay(nX, nY, row, column);
+		Color pixelColor = rayTracer.traceRay(ray);
+		imageWriter.writePixel(row, column, pixelColor);
+	}
+
+	private void castRayAntiAlising(int nx, int ny, int row, int column)
+	{
+		List<Ray> rays = constructRayThroughPixel(nx, ny, column, row, 3);
+		Color pixelColor = rayTracer.traceRay(rays);
+		imageWriter.writePixel(column, row, pixelColor);
+
 	}
 
 	/**
 	 * renderImage function renders the image.
 	 */
-	public  Camera renderImage(){
-		for(int row=0;row<imageWriter.getNy();row++)
-			for(int column=0;column<imageWriter.getNx();column++)
-				castRay(imageWriter.getNx(),imageWriter.getNy(),row,column);
+	public Camera renderImage()
+	{
+		for (int row = 0; row < imageWriter.getNy(); row++)
+			for (int column = 0; column < imageWriter.getNx(); column++)
+				castRay(imageWriter.getNx(), imageWriter.getNy(), row, column);
 		return this;
 	}
+
+	/**
+	 * renderImageAntiAlising function renders the image with anti-aliasing.
+	 */
+	public Camera renderImageAntiAlising()
+	{
+		for (int row = 0; row < imageWriter.getNy(); row++)
+			for (int column = 0; column < imageWriter.getNx(); column++)
+			{
+				castRayAntiAlising(imageWriter.getNx(), imageWriter.getNy(), row, column);
+			}
+		return this;
+
+	}
+
+
 
 	/**
 	 * printGrid function prints a grid on the image.
@@ -172,24 +237,28 @@ public class Camera implements Cloneable
 	 * @param interval - the interval between the lines of the grid.
 	 * @param color    - the color of the grid.
 	 */
-	public  Camera printGrid(int interval, Color color){
-		for(int i=0; i<imageWriter.getNx();i++)
-			for(int j=0; j<imageWriter.getNy();j+=interval)
-				imageWriter.writePixel(i,j,color);
+	public Camera printGrid(int interval, Color color)
+	{
+		for (int i = 0; i < imageWriter.getNx(); i++)
+			for (int j = 0; j < imageWriter.getNy(); j += interval)
+				imageWriter.writePixel(i, j, color);
 
-		for(int i=0; i<imageWriter.getNx();i+=interval)
-			for(int j=0; j<imageWriter.getNy();j++)
-				imageWriter.writePixel(i,j,color);
+		for (int i = 0; i < imageWriter.getNx(); i += interval)
+			for (int j = 0; j < imageWriter.getNy(); j++)
+				imageWriter.writePixel(i, j, color);
 		return this;
 	}
 
 	/**
 	 * writeToImage function writes the image to a file.
 	 */
-	public Camera writeToImage(){
+	public Camera writeToImage()
+	{
 		imageWriter.writeToImage();
 		return this;
 	}
+
+
 
 	/**
 	 * Builder class is a static inner class of Camera class.
@@ -210,14 +279,19 @@ public class Camera implements Cloneable
 			camera.position = p;
 			return this;
 		}
-		public Builder setRayTracer(RayTracerBase rayTracer){
-			camera.rayTracer=rayTracer;
+
+		public Builder setRayTracer(RayTracerBase rayTracer)
+		{
+			camera.rayTracer = rayTracer;
 			return this;
 		}
-		public Builder setImageWriter(ImageWriter imageWriter){
-			camera.imageWriter=imageWriter;
+
+		public Builder setImageWriter(ImageWriter imageWriter)
+		{
+			camera.imageWriter = imageWriter;
 			return this;
 		}
+
 		/**
 		 * set the camera direction.
 		 *
@@ -288,15 +362,15 @@ public class Camera implements Cloneable
 			if (camera.distance == 0 || camera.height == 0 || camera.width == 0)
 				throw new MissingResourceException(missingResource, cameraMsg, "The distance, height or width are missing");
 
-			if(camera.imageWriter==null)
+			if (camera.imageWriter == null)
 				throw new MissingResourceException(missingResource, Camera.class.getSimpleName(), "missing image writer");
 
-			if(camera.rayTracer==null)
+			if (camera.rayTracer == null)
 				throw new MissingResourceException(missingResource, cameraMsg, "missing ray Tracer");
 			camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
 			camera.pCenter = camera.position.add(camera.vTo.scale(camera.distance));
-			
-			
+
+
 			return (Camera) camera.clone();
 
 		}
@@ -308,7 +382,8 @@ public class Camera implements Cloneable
 		 * @param p point to watch there
 		 * @return the builder
 		 */
-		public Builder lookAt(Point p) { // better name: lookAt
+		public Builder lookAt(Point p)
+		{ // better name: lookAt
 			camera.vTo = p.subtract(camera.getPosition()).normalize();
 			// vector Y with little angle so it will be perpendicular to vTo
 			// TODO: make sure this calculation is correct
