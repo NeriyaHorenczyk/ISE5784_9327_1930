@@ -48,28 +48,23 @@ public class SimpleRayTracer extends RayTracerBase {
 
 	@Override
 	public Color traceRay(List<Ray> rays) {
-    Color color = new Color(0, 0, 0);
+		Color color = new Color(0, 0, 0);
 
-    // Trace all rays and sum up their colors
-    for (Ray ray : rays) {
-        List<GeoPoint> intersectionPoints = scene.geometries.findGeoIntersections(ray);
-        if (intersectionPoints.isEmpty())
-            color = scene.background;
-        else
-		{
-            GeoPoint closestPoint = ray.findClosestGeoPoint(intersectionPoints);
-            color = color.add(calcColor(closestPoint, ray));
-        }
-    }
+		// Trace all rays and sum up their colors
+		for (Ray ray : rays) {
+			List<GeoPoint> intersectionPoints = scene.geometries.findGeoIntersections(ray);
+			if (intersectionPoints==null)
+				color = scene.background;
+			else
+			{
+				GeoPoint closestPoint = ray.findClosestGeoPoint(intersectionPoints);
+				color = color.add(calcColor(closestPoint, ray));
+			}
+		}
 
-    // Average the color
-    color = new Color(
-		    (double) color.getColor().getRed() / rays.size(),
-		    (double) color.getColor().getGreen() / rays.size(),
-		    (double) color.getColor().getBlue() / rays.size());
-
-    return color;
-}
+		// Average the color
+		return color.reduce(rays.size());
+	}
 
 	/**
 	 * Calculate the color at a point

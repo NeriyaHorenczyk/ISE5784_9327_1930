@@ -44,6 +44,7 @@ public class ShadowTests {
          .writeToImage();
    }
 
+
    /** Produce a picture of a sphere and triangle with point light and shade */
    @Test
    public void sphereTriangleInitial() {
@@ -57,6 +58,17 @@ public class ShadowTests {
    public void sphereTriangleMove1() {
       Vector movement = new Vector(0, 0, 10).scale(3);
       sphereTriangleHelper("shadowSphereTriangleMove1",
+              new Triangle(
+                      new Point(-70, -40, 0).add(movement),
+                      new Point(-40, -70, 0).add(movement),
+                      new Point(-68, -68, -4).add(movement)),
+              new Point(-100, -100, 200));
+   }
+
+   @Test
+   public void sphereTriangleMoveAnti() {
+      Vector movement = new Vector(0, 0, 10).scale(3);
+      sphereTriangleHelper("shadowSphereTriangleMoveAnti",
               new Triangle(
                       new Point(-70, -40, 0).add(movement),
                       new Point(-40, -70, 0).add(movement),

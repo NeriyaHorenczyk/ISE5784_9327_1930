@@ -1,3 +1,4 @@
+
 package renderer;
 
 import primitives.Color;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.MissingResourceException;
 
+import static java.lang.Math.min;
 import static primitives.Util.isZero;
 
 /**
@@ -160,22 +162,29 @@ public class Camera implements Cloneable
 	{
 		List<Ray> rays = new ArrayList<>();
 
-		// Calculate the size of a pixel
-		double Rx = width / nX;
-		double Ry = height / nY;
+		Point pC = pCenter;
+		double rX = width / nX;
+		double rY = height / nY;
+		double xJ = (j - (nX - 1) / 2.0) * rX;
+		double yI = -(i - (nY - 1) / 2.0) * rY;
+		Point pIJ = pC;
 
-		// Calculate the center of the pixel
-		double Yi = -(i - nY / 2d) * Ry + Ry / 2d;
-		double Xj = (j - nX / 2d) * Rx + Rx / 2d;
-
+		if (!isZero(xJ))
+			pIJ = pIJ.add(vRight.scale(xJ));
+		if (!isZero(yI))
+			pIJ = pIJ.add(vUp.scale(yI));
 		// Generate multiple rays spread out evenly within the pixel
-		for (int p = 0; p < samples; p++)
-			for (int q = 0; q < samples; q++)
+		//פה הוספת קרניים ונודא שזה לא יחרוג מהמסגרת
+		for (int p = -samples/2; p <= samples/2; p++)
+			for (int q = -samples/2; q <= samples/2; q++)
 			{
-				double x = Xj - Rx / 2 + (p + 0.5) * Rx / samples;
-				double y = Yi - Ry / 2 + (q + 0.5) * Ry / samples;
-				Point Pij = pCenter.add(vRight.scale(x)).subtract(vUp.scale(y));
-				rays.add(new Ray(position, Pij.subtract(position)));
+				Point temp =pIJ;
+				if (p!=0 )
+					temp=temp.add(vRight.scale(p*min(rX,rY)/samples));
+				if (q!=0 )
+					temp=temp.add(vUp.scale(q*min(rX,rY)/samples));
+
+				rays.add(new Ray(position, temp.subtract(position)));
 			}
 
 		return rays;
@@ -195,10 +204,11 @@ public class Camera implements Cloneable
 		Color pixelColor = rayTracer.traceRay(ray);
 		imageWriter.writePixel(row, column, pixelColor);
 	}
-
-	private void castRayAntiAlising(int nx, int ny, int row, int column)
+	//תיעוד
+	//i add parmter samples for give us to diside the samples in the test and not the samples will be 3 over time
+	private void castRayAntiAlising(int nx, int ny, int row, int column,int samples)
 	{
-		List<Ray> rays = constructRayThroughPixel(nx, ny, column, row, 3);
+		List<Ray> rays = constructRayThroughPixel(nx, ny, column, row, samples);
 		Color pixelColor = rayTracer.traceRay(rays);
 		imageWriter.writePixel(column, row, pixelColor);
 
@@ -216,14 +226,14 @@ public class Camera implements Cloneable
 	}
 
 	/**
-	 * renderImageAntiAlising function renders the image with anti-aliasing.
+	 * תיעוד חדש
 	 */
-	public Camera renderImageAntiAlising()
+	public Camera renderImageAntiAlising(int samples)
 	{
 		for (int row = 0; row < imageWriter.getNy(); row++)
 			for (int column = 0; column < imageWriter.getNx(); column++)
 			{
-				castRayAntiAlising(imageWriter.getNx(), imageWriter.getNy(), row, column);
+				castRayAntiAlising(imageWriter.getNx(), imageWriter.getNy(), row, column,samples);
 			}
 		return this;
 
