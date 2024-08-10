@@ -5,7 +5,7 @@ import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
 import primitives.Ray;
-
+import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -206,12 +206,143 @@ public class Camera implements Cloneable
 	}
 	//תיעוד
 	//i add parmter samples for give us to diside the samples in the test and not the samples will be 3 over time
-	private void castRayAntiAlising(int nx, int ny, int row, int column,int samples)
+	private void castRayAntiAlising(int nx, int ny, int row, int column,int samples,boolean isAdptive)
 	{
-		List<Ray> rays = constructRayThroughPixel(nx, ny, column, row, samples);
-		Color pixelColor = rayTracer.traceRay(rays);
-		imageWriter.writePixel(column, row, pixelColor);
+		if(isAdptive){
+			imageWriter.writePixel(column, row, castRaysRecursive(nx,ny,column,row,(int)Math.log(samples-1)));
 
+		}else {
+			List<Ray> rays = constructRayThroughPixel(nx, ny, column, row, samples);
+			Color pixelColor = rayTracer.traceRay(rays);
+			imageWriter.writePixel(column, row, pixelColor);
+		}
+
+
+	}
+	public Point findPixel(int nX, int nY, int j, int i)
+	{
+		Point pC = pCenter;
+		double rX = width / nX;
+		double rY = height / nY;
+		double xJ = (j - (nX - 1) / 2.0) * rX;
+		double yI = -(i - (nY - 1) / 2.0) * rY;
+		Point pIJ = pC;
+
+		if (!isZero(xJ))
+			pIJ = pIJ.add(vRight.scale(xJ));
+		if (!isZero(yI))
+			pIJ = pIJ.add(vUp.scale(yI));
+
+		return pIJ;
+
+	}
+
+	/**
+	 * The starting method of the adaptive ss
+	 *
+	 * @param nX    the number of columns in the resolution
+	 * @param nY    the number of rows in the resolution
+	 * @param j     for casting ray in that column
+	 * @param i     for casting ray in that row
+	 * @param level the level of recursion
+	 * @return the color of the cell
+	 */
+	private Color castRaysRecursive(int nX, int nY, int j, int i, int level) {
+		Point pIJ = findPixel(nX, nY, j, i);//מוצא נק אמצע של הפיקסל
+		Color sumAll = Color.BLACK;
+		List<Point> pointList = scatterFourPoints(pIJ,Math.min(height / nY, width / nX));
+		Map<Vector, Color> dictionary = new HashMap<>();
+		Point p0 = pointList.getFirst();
+		Point p1 = pointList.get(1);
+		Point p2 = pointList.get(2);
+		Point p3 = pointList.getLast();
+		Vector v0 = p0.subtract(position);
+		Color color0 = rayTracer.traceRay(new Ray(position, v0));
+		dictionary.put(v0, color0);
+		Vector v1 = p1.subtract(position);
+		Color color1 = rayTracer.traceRay(new Ray(position, v1));
+		dictionary.put(v1, color1);
+		Vector v2 = p2.subtract(position);
+		Color color2 = rayTracer.traceRay(new Ray(position, v2));
+		dictionary.put(v2, color2);
+		Vector v3 = p3.subtract(position);
+		Color color3 = rayTracer.traceRay(new Ray(position, v3));
+		dictionary.put(v3, color3);
+
+		if ((color0.equals(color1) && color1.equals(color2) && color3.equals(color0)) || level <= 0)
+			return color0.add(color1, color2, color3).reduce(4);//אם הצבעים שןןים תחזיר אותם
+		double ribOverTwo = Math.min(height / nY, width / nX) / 2;
+		//להוסיף בפוינט את האמצע
+		dictionary = castRaysRecursive(ribOverTwo, pIJ.middle(p0), level - 1, dictionary);
+		dictionary = castRaysRecursive(ribOverTwo, pIJ.middle(p1), level - 1, dictionary);
+		dictionary = castRaysRecursive(ribOverTwo, pIJ.middle(p2), level - 1, dictionary);
+		dictionary = castRaysRecursive(ribOverTwo, pIJ.middle(p3), level - 1, dictionary);
+		for (Map.Entry<Vector, Color> vectorColorEntry : dictionary.entrySet())
+			sumAll = sumAll.add(vectorColorEntry.getValue());
+		return sumAll.reduce(dictionary.size());
+	}
+
+	/**
+	 * Recursive method for the adaptive ss
+	 *
+	 * @param rib        the size of the rib of the cell
+	 * @param center     the center of the cell
+	 * @param level      the level of the recursion
+	 * @param dictionary for keeping the color for not calculating twice the same ray
+	 * @return the dictionary
+	 */
+	private Map<Vector, Color> castRaysRecursive(double rib, Point center, int level, Map<Vector, Color> dictionary) {
+		List<Point> pointList =scatterFourPoints(center, rib);
+
+		Point p0 = pointList.getFirst();
+		Point p1 = pointList.get(1);
+		Point p2 = pointList.get(2);
+		Point p3 = pointList.getLast();
+
+		Vector v0 = p0.subtract(position);
+		Vector v1 = p1.subtract(position);
+		Vector v2 = p2.subtract(position);
+		Vector v3 = p3.subtract(position);
+		Color color0 = dictionary.get(v0), color1 = dictionary.get(v1), color2 = dictionary.get(v2), color3 = dictionary.get(v3);
+
+		if (color0 == null) {
+			color0 = rayTracer.traceRay(new Ray(position, v0));
+			dictionary.put(v0, color0);
+		}
+		dictionary.put(v0, color0);
+		if (color1 == null) {
+			color1 = rayTracer.traceRay(new Ray(position, v1));
+			dictionary.put(v1, color1);
+		}
+		if (color2 == null) {
+			color2 = rayTracer.traceRay(new Ray(position, v2));
+			dictionary.put(v2, color2);
+		}
+		if (color3 == null) {
+			color3 = rayTracer.traceRay(new Ray(position, v3));
+			dictionary.put(v3, color3);
+		}
+		double ribOverTwo = rib / 2;
+		if (!(color0.equals(color1) || !color1.equals(color2) || !color3.equals(color0)) && level > 0) {
+			dictionary = castRaysRecursive(ribOverTwo, center.middle(p0), level - 1, dictionary);
+			dictionary = castRaysRecursive(ribOverTwo, center.middle(p1), level - 1, dictionary);
+			dictionary = castRaysRecursive(ribOverTwo, center.middle(p2), level - 1, dictionary);
+			dictionary = castRaysRecursive(ribOverTwo, center.middle(p3), level - 1, dictionary);
+		}
+		return dictionary;
+	}
+	/**
+	 * Scatter four points at the edges of the cell according to it's middle
+	 *
+	 * @param center the center of the cell
+	 * @param rib    the size of the rib of the cell
+	 * @return the points
+	 */
+	public List<Point> scatterFourPoints( Point center, double rib) {
+
+		double ribOverTwo = rib / 2;
+		return List.of(center.add(vRight.scale(ribOverTwo)).add(vUp.scale(ribOverTwo)), center.add(vRight.scale(ribOverTwo)).add(vUp.scale(-ribOverTwo)),
+				center.add(vRight.scale(-ribOverTwo)).add(vUp.scale(ribOverTwo)), center.add(vRight.scale(-ribOverTwo)).add(vUp.scale(-ribOverTwo)));
 	}
 
 	/**
@@ -228,12 +359,12 @@ public class Camera implements Cloneable
 	/**
 	 * תיעוד חדש
 	 */
-	public Camera renderImageAntiAlising(int samples)
+	public Camera renderImageAntiAlising(int samples,boolean isAduptiv)
 	{
 		for (int row = 0; row < imageWriter.getNy(); row++)
 			for (int column = 0; column < imageWriter.getNx(); column++)
 			{
-				castRayAntiAlising(imageWriter.getNx(), imageWriter.getNy(), row, column,samples);
+				castRayAntiAlising(imageWriter.getNx(), imageWriter.getNy(), row, column,samples,isAduptiv);
 			}
 		return this;
 

@@ -23,7 +23,10 @@ public class Point
 	{
 		this.xyz = xyz;
 	}
-
+	//תיעוד
+	public Point middle(Point p){
+		return new Point((this.xyz.d1+p.xyz.d1)/2,(this.xyz.d2+p.xyz.d2)/2,(this.xyz.d3+p.xyz.d3)/2);
+	}
 	/**
 	 * three double parameter constructor that builds a new Point with the
 	 * three doubles that represent the three values of the point.

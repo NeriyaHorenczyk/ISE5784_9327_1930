@@ -336,7 +336,7 @@ public class ReflectionRefractionTests
 				.setImageWriter(new ImageWriter("antiAllisingTest", 1000, 1000))
 				.build();
 
-		cam.renderImageAntiAlising(3).writeToImage();
+		cam.renderImageAntiAlising(17,false).writeToImage();
 	}
 
 //	void antiAlisingTest()
