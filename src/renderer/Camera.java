@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.stream.IntStream;
+
 
 import static java.lang.Math.min;
 import static primitives.Util.isZero;
@@ -28,6 +30,15 @@ public class Camera implements Cloneable
 	private ImageWriter imageWriter;
 	private RayTracerBase rayTracer;
 
+
+	private int threadsCount = 0; // -2 auto, -1 range/stream, 0 no threads, 1+ number of threads
+	private final int SPARE_THREADS = 2; // Spare threads if trying to use all the cores
+	private double printInterval = 0; // printing progress percentage interval
+
+	/**
+	 * pixel manager for multi-threading
+	 */
+	private PixelManager pixelManager;
 
 	private Point pCenter; // center of the view plane
 
@@ -200,15 +211,23 @@ public class Camera implements Cloneable
 	 */
 	public void castRay(int nX, int nY, int row, int column)
 	{
-		Ray ray = constructRay(nX, nY, row, column);
-		Color pixelColor = rayTracer.traceRay(ray);
-		imageWriter.writePixel(row, column, pixelColor);
+		imageWriter.writePixel(row, column, rayTracer.traceRay(constructRay(nX, nY, row, column)));
+		pixelManager.pixelDone();
 	}
-	//תיעוד
-	//i add parmter samples for give us to diside the samples in the test and not the samples will be 3 over time
-	private void castRayAntiAlising(int nx, int ny, int row, int column,int samples,boolean isAdptive)
+
+	/**
+	 * castRayAntiAlising function casts a ray from the camera to a specific pixel in the view plane.
+	 *
+	 * @param nx     - number of pixels in the x-axis.
+	 * @param ny     - number of pixels in the y-axis.
+	 * @param row    - the pixel number in the x-axis.
+	 * @param column - the pixel number in the y-axis.
+	 * @param samples - the number of rays to generate within the pixel.
+	 * @param isAdaptive - if the anti-aliasing is adaptive
+	 */
+	private void castRayAntiAlising(int nx, int ny, int row, int column,int samples,boolean isAdaptive)
 	{
-		if(isAdptive){
+		if(isAdaptive){
 			imageWriter.writePixel(column, row, castRaysRecursive(nx,ny,column,row,(int)Math.log(samples-1)));
 
 		}else {
@@ -248,14 +267,16 @@ public class Camera implements Cloneable
 	 * @return the color of the cell
 	 */
 	private Color castRaysRecursive(int nX, int nY, int j, int i, int level) {
-		Point pIJ = findPixel(nX, nY, j, i);//מוצא נק אמצע של הפיקסל
+		Point pIJ = findPixel(nX, nY, j, i); //find the middle of the pixel.
 		Color sumAll = Color.BLACK;
 		List<Point> pointList = scatterFourPoints(pIJ,Math.min(height / nY, width / nX));
 		Map<Vector, Color> dictionary = new HashMap<>();
+
 		Point p0 = pointList.getFirst();
 		Point p1 = pointList.get(1);
 		Point p2 = pointList.get(2);
 		Point p3 = pointList.getLast();
+
 		Vector v0 = p0.subtract(position);
 		Color color0 = rayTracer.traceRay(new Ray(position, v0));
 		dictionary.put(v0, color0);
@@ -270,7 +291,7 @@ public class Camera implements Cloneable
 		dictionary.put(v3, color3);
 
 		if ((color0.equals(color1) && color1.equals(color2) && color3.equals(color0)) || level <= 0)
-			return color0.add(color1, color2, color3).reduce(4);//אם הצבעים שןןים תחזיר אותם
+			return color0.add(color1, color2, color3).reduce(4); //return the average color of the cell
 		double ribOverTwo = Math.min(height / nY, width / nX) / 2;
 		//להוסיף בפוינט את האמצע
 		dictionary = castRaysRecursive(ribOverTwo, pIJ.middle(p0), level - 1, dictionary);
@@ -309,7 +330,6 @@ public class Camera implements Cloneable
 			color0 = rayTracer.traceRay(new Ray(position, v0));
 			dictionary.put(v0, color0);
 		}
-		dictionary.put(v0, color0);
 		if (color1 == null) {
 			color1 = rayTracer.traceRay(new Ray(position, v1));
 			dictionary.put(v1, color1);
@@ -350,21 +370,46 @@ public class Camera implements Cloneable
 	 */
 	public Camera renderImage()
 	{
-		for (int row = 0; row < imageWriter.getNy(); row++)
-			for (int column = 0; column < imageWriter.getNx(); column++)
-				castRay(imageWriter.getNx(), imageWriter.getNy(), row, column);
+		final int nX = imageWriter.getNx();
+		final int nY = imageWriter.getNy();
+
+
+		pixelManager = new PixelManager(nY, nX, printInterval);
+
+		if(threadsCount == 0)
+		{
+			for (int row = 0; row < nY; row++)
+				for (int column = 0; column < nX; column++)
+					castRay(nX, nY, row, column);
+		}
+		else
+		{
+			var threads = new LinkedList<Thread>(); // list of threads
+			while (threadsCount-- > 0) // add appropriate number of threads
+				threads.add(new Thread(() -> { // add a thread with its code
+					PixelManager.Pixel pixel; // current pixel(row,col)
+					// allocate pixel(row,col) in loop until there are no more pixels
+					while ((pixel = pixelManager.nextPixel()) != null)
+						// cast ray through pixel (and color it – inside castRay)
+						castRay(nX, nY, pixel.col(), pixel.row());
+				}));
+			// start all the threads
+			for (var thread : threads) thread.start();
+			// wait until all the threads have finished
+			try { for (var thread : threads) thread.join(); } catch (InterruptedException ignore) {}
+		}
 		return this;
 	}
 
 	/**
 	 * תיעוד חדש
 	 */
-	public Camera renderImageAntiAlising(int samples,boolean isAduptiv)
+	public Camera renderImageAntiAlising(int samples,boolean isAduptive)
 	{
 		for (int row = 0; row < imageWriter.getNy(); row++)
 			for (int column = 0; column < imageWriter.getNx(); column++)
 			{
-				castRayAntiAlising(imageWriter.getNx(), imageWriter.getNy(), row, column,samples,isAduptiv);
+				castRayAntiAlising(imageWriter.getNx(), imageWriter.getNy(), row, column,samples,isAduptive);
 			}
 		return this;
 
